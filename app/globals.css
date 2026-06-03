@@ -356,6 +356,63 @@ a { color: inherit; }
   .ha-about-spacer { display: none; }
 }
 
+/* ───── ABOUT → EVENTS WIPE (desktop only) ─────
+   Mirror of the hero→about wipe, but left→right. About sticks at the top while
+   Events is fixed and revealed from the left. The seam tracks --ae-seam (0 = left
+   edge, 1 = right edge), published per-frame by InkScene — the brush IS the seam.
+   Guard mirrors the inverse of the mobile query. */
+@media (min-width: 721px) and ((hover: hover) or (pointer: fine)) {
+  /* About: pinned sticky during the wipe so it stays visible as the seam sweeps.
+     Once Events takes over ('events' phase) About is hidden outright. */
+  html[data-ae-phase='wipe'] .ha-stage > #about,
+  html[data-ae-phase='events'] .ha-stage > #about {
+    position: sticky;
+    top: var(--nav-h, 74px);
+  }
+  html[data-ae-phase='wipe'] .ha-stage > #about {
+    clip-path: inset(0 0 0 calc(var(--ae-seam, 0) * 100%));
+  }
+  html[data-ae-phase='events'] .ha-stage > #about {
+    clip-path: inset(0 0 0 100%);
+    visibility: hidden;
+  }
+
+  /* Events: held still during the wipe via position:fixed and revealed left→right.
+     Clip lives on the full-bleed section so its right edge meets about's left edge
+     exactly at the brush seam (--ae-seam). */
+  html[data-ae-active] .ha-stage > #events {
+    position: fixed;
+    top: var(--nav-h, 74px);
+    left: 0;
+    right: 0;
+    z-index: 2;
+    clip-path: inset(0 calc((1 - var(--ae-seam, 0)) * 100%) 0 0);
+  }
+  html[data-ae-phase='events'] .ha-stage > #events {
+    clip-path: none;
+  }
+
+  /* While Events is fixed (out of flow) this placeholder holds its space so the
+     page height stays constant and the flow handoff is jump-free. */
+  .ae-events-spacer { height: 0; }
+  html[data-ae-active] .ae-events-spacer { height: var(--events-h, 0px); }
+
+  /* Ink wash (About=ink, Events=tea): fade the dark layers out across the wipe. */
+  html[data-ae-active]::before,
+  html[data-ae-active]::after {
+    opacity: calc(1 - var(--ae-progress, 0));
+    transition: none;
+  }
+}
+
+/* Reduced motion: drop the ae wipe, fall back to normal vertical flow. */
+@media (prefers-reduced-motion: reduce) and (min-width: 721px) and ((hover: hover) or (pointer: fine)) {
+  html[data-ae-phase='wipe'] .ha-stage > #about,
+  html[data-ae-phase='events'] .ha-stage > #about { position: static; clip-path: none; visibility: visible; }
+  html[data-ae-active] .ha-stage > #events { position: static; clip-path: none; }
+  .ae-events-spacer { display: none; }
+}
+
 /* ───── BRUSH-AWARE SECTION LAYOUTS ─────
    On wide screens the brush rests in one half of each chapter; reserve a
    vertical lane on that side by constraining content to the opposite half.

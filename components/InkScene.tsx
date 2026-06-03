@@ -238,6 +238,8 @@ function SceneContents({ stateRef }: InkSceneProps) {
   const lastEmitRef = useRef(0)
   const lastSeamRef = useRef(-1)
   const lastProgressRef = useRef(-1)
+  const lastAeSeamRef = useRef(-1)
+  const lastAeProgressRef = useRef(-1)
 
   useFrame((state, delta) => {
     const rig = brushRigRef.current
@@ -353,14 +355,49 @@ function SceneContents({ stateRef }: InkSceneProps) {
       lastProgressRef.current = progress
     }
 
-    // ── Ink-wash trail emission (hero→about transition only) ──
+    // ── About→Events wipe seam (left→right, --ae-seam 0→1) ──
+    // Mirrors the ha seam logic: brush x position drives the clip-path split between
+    // About (clips from left) and Events (reveals from left). Edge ramps at both ends
+    // ensure full-bleed coverage even though the brush never reaches the screen edges.
+    let aeSeam: number
+    if (seg.kind === 'transition' && seg.id === 'about-to-events') {
+      const bf = (currentPose.current.xFrac + 1) / 2 // 0=left edge, 1=right edge
+      const startEdge = 0.10
+      const clearStart = 0.72
+      const clearEnd = 0.90
+      if (lp < startEdge) aeSeam = THREE.MathUtils.lerp(0, bf, lp / startEdge)
+      else if (lp >= clearEnd) aeSeam = 1
+      else if (lp >= clearStart) aeSeam = THREE.MathUtils.lerp(bf, 1, (lp - clearStart) / (clearEnd - clearStart))
+      else aeSeam = bf
+    } else {
+      aeSeam = seg.kind === 'rest' && (seg.chapter === 'hero' || seg.chapter === 'about') ? 0 : 1
+    }
+    aeSeam = THREE.MathUtils.clamp(aeSeam, 0, 1)
+    if (Math.abs(aeSeam - lastAeSeamRef.current) > 0.0005) {
+      document.documentElement.style.setProperty('--ae-seam', aeSeam.toFixed(4))
+      lastAeSeamRef.current = aeSeam
+    }
+
+    const aeProgress =
+      seg.kind === 'transition' && seg.id === 'about-to-events'
+        ? lp
+        : seg.kind === 'rest' && (seg.chapter === 'hero' || seg.chapter === 'about')
+          ? 0
+          : 1
+    if (Math.abs(aeProgress - lastAeProgressRef.current) > 0.0005) {
+      document.documentElement.style.setProperty('--ae-progress', aeProgress.toFixed(4))
+      lastAeProgressRef.current = aeProgress
+    }
+
+    // ── Ink-wash trail emission (hero→about and about→events transitions) ──
     // The trail is placed on the z=0 plane but aligned to the brush's screen
     // position via xFrac/yFrac so the marks visually trail behind the brush as
-    // it sweeps right→left, regardless of how close the brush is to the camera.
+    // it sweeps across, regardless of how close the brush is to the camera.
     const isHeroAbout = scroll?.segment.kind === 'transition' && scroll.segment.id === 'hero-to-about'
+    const isAboutEvents = scroll?.segment.kind === 'transition' && scroll.segment.id === 'about-to-events'
     const marks = trailMarksRef.current
     const now = state.clock.elapsedTime
-    if (isHeroAbout) {
+    if (isHeroAbout || isAboutEvents) {
       const lpNow = scroll!.localProgress
       // Emit during the close approach and the painting sweep.
       if (lpNow >= 0.38 && lpNow <= 0.98) {

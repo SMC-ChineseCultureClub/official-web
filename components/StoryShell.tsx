@@ -39,6 +39,7 @@ const chapterMarks: Record<ChapterId, { glyph: string; phrase: string }> = {
 }
 
 const HERO_ABOUT_HANDOFF_PROGRESS = 0.88
+const ABOUT_EVENTS_HANDOFF_PROGRESS = 0.88
 const FALLBACK_NAV_OFFSET = 74
 
 type RestSeg = { kind: 'rest'; chapter: ChapterId; el: HTMLElement; top: number; bottom: number }
@@ -69,6 +70,7 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
     let rafId: number | null = null
     let pendingMeasure = true
     let prevHeroAbout = false
+    let prevAboutEvents = false
     let segments: Seg[] = []
     const restByChapter = new Map<ChapterId, RestSeg>()
 
@@ -138,7 +140,8 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
       rafId = null
       const docEl = document.documentElement
       const aboutIsFixed = prevHeroAbout && docEl.dataset.haActive != null
-      if (pendingMeasure && !aboutIsFixed) {
+      const eventsIsFixed = prevAboutEvents && docEl.dataset.aeActive != null
+      if (pendingMeasure && !aboutIsFixed && !eventsIsFixed) {
         segments = buildSegments()
         pendingMeasure = false
         // Record About's in-flow height so its placeholder can hold its place while it is
@@ -148,6 +151,14 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
           document.documentElement.style.setProperty(
             '--about-h',
             `${Math.round(aboutSeg.bottom - aboutSeg.top)}px`,
+          )
+        }
+        // Same for Events during the about→events wipe.
+        const evtSeg = restByChapter.get('events')
+        if (evtSeg) {
+          document.documentElement.style.setProperty(
+            '--events-h',
+            `${Math.round(evtSeg.bottom - evtSeg.top)}px`,
           )
         }
       }
@@ -172,6 +183,20 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
         window.scrollY < aboutSeg.top - navOffset
       ) {
         current = heroAboutSeg
+      }
+      // Mirror of the ha override: keep active segment pinned to about-to-events
+      // until the scroll position has actually reached Events' natural layout top.
+      const evtSeg = restByChapter.get('events')
+      const aboutEventsSeg = segments.find(
+        (s): s is TransSeg => s.kind === 'transition' && s.id === 'about-to-events',
+      )
+      if (
+        evtSeg &&
+        aboutEventsSeg &&
+        focusY >= aboutEventsSeg.top &&
+        window.scrollY < evtSeg.top - navOffset
+      ) {
+        current = aboutEventsSeg
       }
       const localProgress = Math.min(
         1,
@@ -236,6 +261,27 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
       // once the wipe ends and #about is back at identity.
       if (prevHeroAbout && !isHeroAbout) pendingMeasure = true
       prevHeroAbout = isHeroAbout
+
+      // ── About→Events wipe ──
+      // Mirror of the ha wipe: About sticks at the top; Events is fixed and
+      // revealed left→right. data-ae-active gates the fixed/spacer CSS;
+      // data-ae-phase gates About's clip-path and Events' clip-path.
+      const isAboutEvents = current.kind === 'transition' && current.id === 'about-to-events'
+      if (isAboutEvents) docEl.dataset.aeActive = ''
+      else delete docEl.dataset.aeActive
+
+      const aboutEventsHandedOff = isAboutEvents && localProgress >= ABOUT_EVENTS_HANDOFF_PROGRESS
+      docEl.dataset.aePhase = isAboutEvents
+        ? aboutEventsHandedOff
+          ? 'events'
+          : 'wipe'
+        : (current.kind === 'rest' && (current.chapter === 'hero' || current.chapter === 'about')) ||
+          (current.kind === 'transition' && current.id === 'hero-to-about')
+          ? 'about'
+          : 'events'
+
+      if (prevAboutEvents && !isAboutEvents) pendingMeasure = true
+      prevAboutEvents = isAboutEvents
 
       const nextActive: ChapterId =
         current.kind === 'rest'

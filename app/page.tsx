@@ -21,9 +21,10 @@ export default function Page() {
           <Transition from="hero" to="about" />
           <About />
           <div className="ha-about-spacer" aria-hidden="true" />
+          <Transition from="about" to="events" />
+          <Events />
+          <div className="ae-events-spacer" aria-hidden="true" />
         </div>
-        <Transition from="about" to="events" />
-        <Events />
         <Transition from="events" to="gallery" />
         <Gallery />
         <Transition from="gallery" to="officers" />

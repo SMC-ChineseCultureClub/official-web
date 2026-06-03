@@ -82,16 +82,28 @@ export const TRANSITIONS: Record<TransitionId, TransitionTrack> = {
   },
 
   // ─── About (left) → Events (right) ─────────────────────────────────────
-  // Calligraphic stroke: brush lays nearly flat (tip-forward), dips below the
-  // baseline as if writing across the page, then pops upright on the right.
+  // Cinematic circular brushstroke (mirror of hero-to-about): brush moves
+  // forward-right, traces a counter-clockwise loop with its closest approach
+  // near the apex, then sweeps left→right painting Events into view and
+  // settling on the right.
   'about-to-events': {
     keyframes: [
       kf(0.00, REST_POSES.about),
-      kf(0.15, { xFrac: -0.55, yFrac: -0.20, z:  0.6, rotation: [-0.55, 0,    -0.10], scale: 0.95, accent: '#6b3220' }),
-      kf(0.30, { xFrac: -0.40, yFrac: -0.55, z:  1.6, rotation: [-1.25, 0,     0.10], scale: 1.05, accent: '#7a361d' }),
-      kf(0.50, { xFrac:  0.00, yFrac: -0.65, z:  2.2, rotation: [-1.45, 0,     0.30], scale: 1.10, accent: '#8b3a20' }),
-      kf(0.70, { xFrac:  0.40, yFrac: -0.55, z:  1.6, rotation: [-1.25, 0,     0.45], scale: 1.05, accent: '#8b3a20' }),
-      kf(0.86, { xFrac:  0.55, yFrac: -0.15, z:  0.4, rotation: [-0.40, 0,     0.25], scale: 0.92, accent: '#8b3a20' }),
+      // 1. Forward-right approach, starting the circular curl rightward.
+      kf(0.12, { xFrac: -0.48, yFrac:  0.18, z:  1.5, rotation: [-0.12,  0.10,  0.18], scale: 1.20, accent: '#6b3220' }),
+      // 2. Rising up as the loop opens, brush leaning forward.
+      kf(0.24, { xFrac: -0.20, yFrac:  0.48, z:  3.2, rotation: [-0.28,  0.06,  0.30], scale: 1.60, accent: '#7a361d' }),
+      // 3. Top of the arc, sweeping toward center, getting larger.
+      kf(0.38, { xFrac:  0.05, yFrac:  0.55, z:  4.5, rotation: [-0.16,  0,     0.15], scale: 1.95, accent: '#8b3a20' }),
+      // 4. CLOSEST APPROACH — handle near camera, brush nearly vertical,
+      //    top and bottom extending toward the edges of the viewport.
+      kf(0.50, { xFrac:  0.10, yFrac:  0.05, z:  6.0, rotation: [-0.02,  0,     0.02], scale: 2.38, accent: '#8b3a20' }),
+      // 5. Second half — brush starts the left→right sweep that paints Events.
+      kf(0.62, { xFrac:  0.28, yFrac:  0.15, z:  4.8, rotation: [ 0.06, -0.04, -0.06], scale: 1.98, accent: '#8b3a20' }),
+      // 6. Continuing right, easing back from the camera.
+      kf(0.75, { xFrac:  0.46, yFrac:  0.12, z:  2.6, rotation: [ 0.05, -0.04,  0.02], scale: 1.52, accent: '#8b3a20' }),
+      // 7. Settling toward Events rest on the right.
+      kf(0.88, { xFrac:  0.56, yFrac:  0.03, z:  0.8, rotation: [ 0.02, -0.02,  0.06], scale: 1.15, accent: '#8b3a20' }),
       kf(1.00, REST_POSES.events),
     ],
   },
