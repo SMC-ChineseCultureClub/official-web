@@ -42,6 +42,16 @@ const HERO_ABOUT_HANDOFF_PROGRESS = 0.88
 const ABOUT_EVENTS_HANDOFF_PROGRESS = 0.88
 const FALLBACK_NAV_OFFSET = 74
 
+// Vertical focus line: the active segment is the one straddling this fraction of the
+// viewport (0 = top, 1 = bottom). Must stay in sync with the 0.45 InkScene uses when it
+// recomputes transition progress per frame.
+const FOCUS_FRAC = 0.45
+// The about→events wipe should begin the instant About's end scrolls into view at the
+// BOTTOM of the viewport — not later, once it has climbed to the focus line. Pulling the
+// transition's scroll window up by the gap between the focus line and the viewport bottom
+// moves activation (and progress 0) to that moment.
+const ABOUT_EVENTS_LEAD_FRAC = 1 - FOCUS_FRAC
+
 type RestSeg = { kind: 'rest'; chapter: ChapterId; el: HTMLElement; top: number; bottom: number }
 type TransSeg = { kind: 'transition'; id: TransitionId; from: ChapterId; to: ChapterId; el: HTMLElement; top: number; bottom: number }
 type Seg = RestSeg | TransSeg
@@ -120,7 +130,12 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
         } else if (transition) {
           const from = el.dataset.from as ChapterId
           const to = el.dataset.to as ChapterId
-          out.push({ kind: 'transition', id: transition as TransitionId, from, to, el, top, bottom })
+          const id = transition as TransitionId
+          // Shift the about→events window up by ABOUT_EVENTS_LEAD_FRAC of the viewport so
+          // the wipe activates (localProgress 0) the moment About's end reaches the
+          // viewport bottom. Both edges move together, so the sweep still spans 100vh.
+          const lead = id === 'about-to-events' ? ABOUT_EVENTS_LEAD_FRAC * window.innerHeight : 0
+          out.push({ kind: 'transition', id, from, to, el, top: top - lead, bottom: bottom - lead })
         }
       }
       out.sort((a, b) => a.top - b.top)
@@ -165,7 +180,7 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
       if (!segments.length) return
 
       const viewportHeight = window.innerHeight
-      const focusY = window.scrollY + viewportHeight * 0.45
+      const focusY = window.scrollY + viewportHeight * FOCUS_FRAC
       const navOffset = getNavOffset()
       docEl.style.setProperty('--nav-h', `${navOffset}px`)
       const pageHeight = Math.max(document.documentElement.scrollHeight - viewportHeight, 1)
@@ -263,10 +278,16 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
       prevHeroAbout = isHeroAbout
 
       // ── About→Events wipe ──
-      // Mirror of the ha wipe: About sticks at the top; Events is fixed and
-      // revealed left→right. data-ae-active gates the fixed/spacer CSS;
-      // data-ae-phase gates About's clip-path and Events' clip-path.
+      // About is frozen at its current visual position by publishing --ae-about-top
+      // (About's getBoundingClientRect().top) on the FIRST frame of the wipe, before
+      // data-ae-active is set (which would apply position:fixed and change the rect).
       const isAboutEvents = current.kind === 'transition' && current.id === 'about-to-events'
+      if (isAboutEvents && !prevAboutEvents) {
+        const aboutEl = restByChapter.get('about')?.el
+        if (aboutEl) {
+          docEl.style.setProperty('--ae-about-top', `${Math.round(aboutEl.getBoundingClientRect().top)}px`)
+        }
+      }
       if (isAboutEvents) docEl.dataset.aeActive = ''
       else delete docEl.dataset.aeActive
 

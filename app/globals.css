@@ -362,20 +362,26 @@ a { color: inherit; }
    edge, 1 = right edge), published per-frame by InkScene — the brush IS the seam.
    Guard mirrors the inverse of the mobile query. */
 @media (min-width: 721px) and ((hover: hover) or (pointer: fine)) {
-  /* About: pinned sticky during the wipe so it stays visible as the seam sweeps.
-     Once Events takes over ('events' phase) About is hidden outright. */
-  html[data-ae-phase='wipe'] .ha-stage > #about,
-  html[data-ae-phase='events'] .ha-stage > #about {
-    position: sticky;
-    top: var(--nav-h, 74px);
-  }
-  html[data-ae-phase='wipe'] .ha-stage > #about {
+  /* About: frozen at its current visual position when the wipe begins (--ae-about-top
+     is captured in JS the first frame isAboutEvents becomes true, before position:fixed
+     is applied). This prevents the snap/jump that position:sticky causes when About has
+     already scrolled partially above the viewport. Clip from left as seam advances. */
+  html[data-ae-active] .ha-stage > #about {
+    position: fixed;
+    top: var(--ae-about-top, 0px);
+    left: 0;
+    right: 0;
+    z-index: 2;
     clip-path: inset(0 0 0 calc(var(--ae-seam, 0) * 100%));
   }
   html[data-ae-phase='events'] .ha-stage > #about {
     clip-path: inset(0 0 0 100%);
     visibility: hidden;
   }
+
+  /* While About is fixed (out of flow) this placeholder holds its space. */
+  .ae-about-spacer { height: 0; }
+  html[data-ae-active] .ae-about-spacer { height: var(--about-h, 0px); }
 
   /* Events: held still during the wipe via position:fixed and revealed left→right.
      Clip lives on the full-bleed section so its right edge meets about's left edge
@@ -407,9 +413,10 @@ a { color: inherit; }
 
 /* Reduced motion: drop the ae wipe, fall back to normal vertical flow. */
 @media (prefers-reduced-motion: reduce) and (min-width: 721px) and ((hover: hover) or (pointer: fine)) {
-  html[data-ae-phase='wipe'] .ha-stage > #about,
+  html[data-ae-active] .ha-stage > #about { position: static; clip-path: none; visibility: visible; }
   html[data-ae-phase='events'] .ha-stage > #about { position: static; clip-path: none; visibility: visible; }
   html[data-ae-active] .ha-stage > #events { position: static; clip-path: none; }
+  .ae-about-spacer { display: none; }
   .ae-events-spacer { display: none; }
 }
 

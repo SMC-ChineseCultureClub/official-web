@@ -399,8 +399,9 @@ function SceneContents({ stateRef }: InkSceneProps) {
     const now = state.clock.elapsedTime
     if (isHeroAbout || isAboutEvents) {
       const lpNow = scroll!.localProgress
-      // Emit during the close approach and the painting sweep.
-      if (lpNow >= 0.38 && lpNow <= 0.98) {
+      // ha: emit from close-approach onward; ae: emit from first brush movement.
+      const trailStart = isHeroAbout ? 0.38 : 0.05
+      if (lpNow >= trailStart && lpNow <= 0.98) {
         const emitInterval = 0.045
         if (now - lastEmitRef.current >= emitInterval) {
           // Recycle the oldest slot (invisible slots preferred).
@@ -502,6 +503,13 @@ export default function InkScene(props: InkSceneProps) {
   return (
     <div className="scene-layer" aria-hidden="true">
       <Canvas
+        // R3F's Canvas wrapper div defaults to `pointer-events: auto`, which (being a
+        // descendant) re-enables hit-testing despite the parent `.scene-layer`'s
+        // `pointer-events: none`, so the full-viewport canvas swallows every hover/click
+        // meant for the section content beneath it (e.g. the Events list). The brush is
+        // purely decorative, so force the wrapper transparent to pointer events. R3F
+        // spreads `style` after its own `pointerEvents`, so this wins.
+        style={{ pointerEvents: 'none' }}
         camera={{ position: [0, 0, 8], fov: 46, near: 0.1, far: 60 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true }}
