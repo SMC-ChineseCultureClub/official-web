@@ -6,6 +6,7 @@ import { Suspense, useEffect, useMemo, useRef, useState, type RefObject } from '
 import * as THREE from 'three'
 import {
   REST_POSES,
+  TRAIL_PROFILES,
   TRANSITIONS,
   sampleTrack,
   type ChapterId,
@@ -137,6 +138,9 @@ function makeInkTexture(): THREE.Texture {
 }
 
 const TRAIL_POOL_SIZE = 36
+// Minimum world-space distance the brush must travel between marks. Without
+// this a paused scroll keeps stamping the same spot into a solid dark blob.
+const TRAIL_MIN_STEP = 0.06
 
 type TrailMark = {
   position: THREE.Vector3
@@ -232,6 +236,7 @@ function SceneContents({ stateRef }: InkSceneProps) {
     })),
   )
   const lastEmitRef = useRef(0)
+  const lastEmitPos = useRef(new THREE.Vector2())
 
   useFrame((state, delta) => {
     const rig = brushRigRef.current
@@ -300,19 +305,24 @@ function SceneContents({ stateRef }: InkSceneProps) {
 
     rig.scale.setScalar(MODEL_BASE_SCALE * currentPose.current.scale)
 
-    // ── Ink-wash trail emission (hero→about transition only) ──
-    // The trail is placed on the z=0 plane but aligned to the brush's screen
-    // position via xFrac/yFrac so the marks visually trail behind the brush as
-    // it sweeps right→left, regardless of how close the brush is to the camera.
-    const isHeroAbout = scroll?.segment.kind === 'transition' && scroll.segment.id === 'hero-to-about'
+    // ── Ink-wash trail emission ──
+    // Marks are placed on the z=0 plane but aligned to the brush's screen
+    // position via xFrac/yFrac so they visually trail behind the brush as it
+    // sweeps, regardless of how close the brush is to the camera. Every
+    // transition emits; TRAIL_PROFILES weights each one to suit its arc.
     const marks = trailMarksRef.current
     const now = state.clock.elapsedTime
-    if (isHeroAbout) {
+    const profile =
+      scroll?.segment.kind === 'transition' ? TRAIL_PROFILES[scroll.segment.id] : null
+    if (profile) {
       const lpNow = scroll!.localProgress
-      // Emit during the close approach and the painting sweep.
-      if (lpNow >= 0.38 && lpNow <= 0.98) {
-        const emitInterval = 0.045
-        if (now - lastEmitRef.current >= emitInterval) {
+      if (lpNow >= profile.window[0] && lpNow <= profile.window[1]) {
+        // Project the brush's xFrac/yFrac onto the z=0 plane so the trail
+        // lives on the "paper" rather than near the camera.
+        const baseX = currentPose.current.xFrac * (viewport.width / 2)
+        const baseY = currentPose.current.yFrac * (viewport.height / 2)
+        const moved = Math.hypot(baseX - lastEmitPos.current.x, baseY - lastEmitPos.current.y)
+        if (now - lastEmitRef.current >= profile.interval && moved >= TRAIL_MIN_STEP) {
           // Recycle the oldest slot (invisible slots preferred).
           let slot = -1
           let oldest = Infinity
@@ -323,28 +333,29 @@ function SceneContents({ stateRef }: InkSceneProps) {
           }
           if (slot >= 0) {
             const m = marks[slot]
-            // Project the brush's xFrac/yFrac onto the z=0 plane so the trail
-            // lives on the "paper" rather than near the camera.
-            const baseX = currentPose.current.xFrac * (viewport.width / 2)
-            const baseY = currentPose.current.yFrac * (viewport.height / 2)
+            // Marks thin out as the brush recedes behind the paper plane.
+            const depthFade = THREE.MathUtils.clamp((currentPose.current.z + 6) / 6, 0.2, 1)
             const isDroplet = Math.random() < 0.22
             const jx = (Math.random() - 0.5) * (isDroplet ? 1.4 : 0.55)
             const jy = (Math.random() - 0.5) * (isDroplet ? 1.0 : 0.40) - 0.10
             m.position.set(baseX + jx, baseY + jy, 0)
             m.birth = now
             m.life = isDroplet ? (0.9 + Math.random() * 0.7) : (1.6 + Math.random() * 1.2)
-            m.maxAlpha = isDroplet ? (0.42 + Math.random() * 0.22) : (0.28 + Math.random() * 0.22)
-            m.startScale = isDroplet ? (0.20 + Math.random() * 0.22) : (0.55 + Math.random() * 0.95)
+            m.maxAlpha = (isDroplet ? (0.42 + Math.random() * 0.22) : (0.28 + Math.random() * 0.22))
+              * profile.alpha * depthFade
+            m.startScale = (isDroplet ? (0.20 + Math.random() * 0.22) : (0.55 + Math.random() * 0.95))
+              * profile.scale * depthFade
             m.rotation = Math.random() * Math.PI * 2
             m.visible = true
             lastEmitRef.current = now
+            lastEmitPos.current.set(baseX, baseY)
           }
         }
       }
     }
-    // Outside the hero→about transition we simply stop emitting new marks —
-    // existing marks keep aging through InkTrail's useFrame so the trail
-    // tapers off smoothly instead of vanishing at the segment boundary.
+    // Outside an emitting window we simply stop adding new marks — existing
+    // marks keep aging through InkTrail's useFrame so the trail tapers off
+    // smoothly instead of vanishing at the segment boundary.
 
     const handles = handleMaterialsRef.current
     handles.forEach((orig, mat) => {
