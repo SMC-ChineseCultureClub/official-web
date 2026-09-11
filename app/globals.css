@@ -1153,7 +1153,7 @@ section {
   grid-template-areas:
     ". center ."
     "left center right"
-    ". center credit";
+    ". center .";
   column-gap: clamp(12px, 2vw, 36px);
   row-gap: clamp(20px, 5vh, 56px);
   align-items: center;
@@ -1161,11 +1161,6 @@ section {
   min-height: clamp(380px, 60vh, 620px);
   margin: 0 auto;
   text-align: left;
-}
-
-.epigraph__rule {
-  width: 1px; height: clamp(40px, 6vh, 72px);
-  background: linear-gradient(to bottom, transparent, var(--ink-faint));
 }
 
 .epigraph__verse {
@@ -1185,34 +1180,35 @@ section {
   white-space: nowrap;
 }
 
-.epigraph__line--left {
+.epigraph__couplet {
+  display: block;
+}
+
+.epigraph__couplet--left {
   grid-area: left;
   justify-self: end;
   text-align: right;
 }
 
-.epigraph__line--right {
+.epigraph__couplet--right {
   grid-area: right;
   justify-self: start;
   text-align: left;
 }
 
-.epigraph__credit {
-  grid-area: credit;
-  justify-self: start;
-  align-self: start;
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
+.epigraph__trans {
+  display: block;
+  margin-top: clamp(10px, 1.4vh, 18px);
+  font-family: var(--serif-display); font-style: italic;
+  font-weight: 400; font-size: clamp(13px, 1.05vw, 16px);
+  letter-spacing: 0.04em; line-height: 1.5;
+  color: var(--ink-mute);
+  white-space: normal;
+  max-width: 100%;
 }
 
-.epigraph__source {
-  font-family: var(--serif-display); font-style: italic;
-  font-weight: 400; font-size: clamp(13px, 1vw, 15px);
-  letter-spacing: 0.04em; color: var(--ink-mute); margin: 0;
-  max-width: min(18ch, 100%);
-  line-height: 1.35;
-}
+.epigraph__couplet--left .epigraph__trans { margin-left: auto; }
+.epigraph__couplet--right .epigraph__trans { margin-right: auto; }
 
 @media (max-width: 720px) {
   .scene-layer {
@@ -1245,27 +1241,22 @@ section {
     white-space: normal;
   }
 
-  .epigraph__line--left,
-  .epigraph__line--right {
+  .epigraph__couplet--left,
+  .epigraph__couplet--right {
     justify-self: auto;
     text-align: center;
   }
 
-  .epigraph__credit {
-    justify-self: auto;
-    align-self: auto;
-    justify-content: center;
-    max-width: min(100%, 20rem);
-    padding-top: 6px;
+  .epigraph__couplet + .epigraph__couplet {
+    margin-top: clamp(18px, 5vw, 28px);
   }
 
-  .epigraph__rule {
-    height: 46px;
-  }
-
-  .epigraph__source {
-    max-width: 18ch;
-    text-align: left;
+  .epigraph__trans {
+    margin-top: 10px;
+    font-size: clamp(13px, 3.7vw, 15px);
+    max-width: min(30ch, 100%);
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
