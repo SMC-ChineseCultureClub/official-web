@@ -21,12 +21,12 @@ export default function Join() {
         <dl className="join__where">
           <dt>Where to find us</dt>
           <dd>
-            Humanities &amp; Social Science · Rm 151
+            Humanities &amp; Social Science · Rm 252
             <span className="small">1900 Pico Boulevard, Santa Monica, CA</span>
           </dd>
           <dt>When we meet</dt>
           <dd>
-            Thursdays · 11:15 AM — 12:30 PM
+            Thursday: 11:15AM - 12:30PM
             <span className="small">Open-door, all semester long</span>
           </dd>
           <dt>Faculty advisor</dt>
