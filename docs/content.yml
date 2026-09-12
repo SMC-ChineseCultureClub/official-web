@@ -1,0 +1,240 @@
+# ═══════════════════════════════════════════════════════════════════════
+#  CCC @ SMC — 网站内容填写表
+# ═══════════════════════════════════════════════════════════════════════
+#
+#  怎么用：
+#    1. 把下面每个 TODO 换成真实内容。
+#    2. 拿不准 / 还没确认的，**保持 TODO 不要动**——我不会去猜，
+#       会原样跳过那一项并在报告里列出来。
+#    3. 确定不要某一项（例如整块删掉），把值写成 REMOVE。
+#    4. 填完告诉我，我读这份文件写进代码。
+#
+#  几条注意：
+#    - 中文引号「」『』和标点都可以直接写，不用转义。
+#    - 值里含有 : # 等符号时，用双引号包起来，例如 "11:15 AM"
+#    - events / gallery / officers 三个列表**条数随意增删**，
+#      代码结构我来适配，不用管现在是几条。
+#    - 行首的 - 号表示一条记录，缩进请对齐。
+#
+# ═══════════════════════════════════════════════════════════════════════
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 1. 全站公用值
+#    ⚠️ 这几个值在代码里出现在多个地方（成立年份有 4 处），
+#    以前就是因为分散所以互相矛盾。这里填一次，我同步到所有位置。
+# ───────────────────────────────────────────────────────────────────────
+site:
+  # 社团成立年份。出现在：Hero 副标题、About 数据块、Nav 品牌行、Footer 版权
+  # 现在站内写的是 2025，但 Gallery 里有 2023 的活动，自相矛盾
+  founded_year: TODO          # 例: 2025
+
+  # Footer 版权年份（通常是今年）
+  copyright_year: TODO        # 例: 2026
+
+  # 当前 board 的届别，显示为「The 2026 board.」
+  board_year: TODO            # 例: 2026
+
+  # 固定会议地点。出现在：About 数据块、Join 信息表
+  # 现在 About/Join 写 HSS 151，但 Events 里出现过 HSS 152
+  meeting_room: TODO          # 例: HSS 151
+  meeting_building: TODO      # 例: Humanities & Social Science
+  campus_address: TODO        # 例: 1900 Pico Boulevard, Santa Monica, CA
+
+  # 固定会议时间。出现在：About 数据块（短版）、Join 信息表（长版）
+  meeting_time_short: TODO    # 例: "Thu 11:15AM"
+  meeting_time_long: TODO     # 例: "Thursdays · 11:15 AM — 12:30 PM"
+
+  # 联系方式
+  email: TODO                 # 例: chineseculture.smc@gmail.com
+  instagram_handle: TODO      # 例: smc.ccc_   （不要带 @ 和网址）
+  smc_clubs_url: TODO         # SMC 官网社团页，填前请点开确认还有效
+
+  # 网站域名（影响 SEO metadata 和 public/CNAME）
+  domain: TODO                # 例: ccc.peterguan.com
+
+  # ⚠️ 现在全站被 robots noindex 屏蔽，不会被搜索引擎收录。
+  # 准备好上线了就改成 true
+  allow_search_indexing: false
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 2. Hero（首屏）
+# ───────────────────────────────────────────────────────────────────────
+hero:
+  # 首屏大段介绍。现在这段是编的，需要一句能代表社团真实调性的话
+  lede: TODO
+
+  # 中文小字副标题，现在是「a quieter way of belonging.」
+  tagline_en: TODO
+
+  # ⚠️ 三个数字。现在写的 240+ 会员 / 14 场活动 / II 年 全是编的。
+  # 编造会员数是最容易被拆穿、也最伤信誉的一项。
+  #
+  # 如果凑不出真实数字，把整块写成 REMOVE，或者换成不需要数字的说法
+  # （例如 Founded 2025 / Open to all majors / No dues）——
+  # 留个假数字比没有这块更糟。
+  stats:
+    - value: TODO             # 例: 240+
+      label: TODO             # 例: active members
+    - value: TODO
+      label: TODO
+    - value: TODO
+      label: TODO
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 3. About（关于我们）
+# ───────────────────────────────────────────────────────────────────────
+about:
+  # 开头那段大字
+  lead: TODO
+
+  # 第二段。现在写的「Founded by Songyi Yu in 2025」「借来的厨房办春节」
+  # 「中秋切八块月饼」全是编的。
+  # ⚠️ 如果要写创始人真名，必须本人同意——这会公开显示。
+  body: TODO
+
+  # 第三段（现在是「No fluency, no prior knowledge, no Chinese surname required.」）
+  closing: TODO
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 4. Events（活动）
+#    ⚠️ 这是全站风险最高的部分：现在有 5 条编造的未来活动，带具体日期。
+#    学生按假日期跑来是实际伤害，不是「内容不新」而已。
+#
+#    条数随意。只有 2 场确认的就只写 2 条，我会把布局改成自适应。
+# ───────────────────────────────────────────────────────────────────────
+events:
+  # 顶部那张大卡（主打活动）。不需要就整块写 feature: REMOVE
+  feature:
+    tag: TODO                 # 例: Headline event · February
+    title: TODO               # 例: Lunar New Year Gala & Banquet
+    title_cn: TODO            # 例: 农历新年 · 春节晚会
+    description: TODO
+    date: TODO                # 例: "Sat · 14 Feb"
+    time: TODO                # 例: "6 — 10 PM"
+    location: TODO            # 例: Cafeteria
+    location_note: TODO       # 例: SMC Campus
+    cost: TODO                # 例: "Free · RSVP"
+    cost_note: TODO           # 例: Members + guests
+    photo: TODO               # 照片文件名，放 public/ 下；没有就写 REMOVE
+    seal_cn: TODO             # 卡片角上的印章字，1 个汉字，例: 春
+
+  # 下方列表。每条一个 - 开头。增删随意。
+  list:
+    - day: TODO               # 例: 28
+      month: TODO             # 例: September
+      title: TODO             # 例: Mid-Autumn Mooncake Night
+      title_cn: TODO          # 例: 中秋赏月
+      where: TODO
+      when: TODO              # 例: "7:30 — 10:00 PM"
+
+    - day: TODO
+      month: TODO
+      title: TODO
+      title_cn: TODO
+      where: TODO
+      when: TODO
+
+  # 如果活动条数不够，是否在列表末尾加一条引导关注 Instagram 的入口
+  show_instagram_cta: TODO    # true 或 false
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 5. Gallery（往期存档）
+#    现在 9 格全是占位，日期跨 2023–2025，和「2025 成立」冲突。
+#    有几张真照片就写几条，不要留占位格。
+#
+#    照片：放 public/ 下，压缩成 WebP，宽度别超过 1600px
+#    （静态导出模式没有自动图片优化）。
+#    ⚠️ 合影里如果有非 board 成员，注意肖像权。
+# ───────────────────────────────────────────────────────────────────────
+gallery:
+  - photo: TODO               # 例: gallery/lunar-new-year-2025.webp
+    title: TODO               # 例: Lunar New Year
+    date: TODO                # 例: Feb '25
+    corner_cn: TODO           # 角上的单字，例: 饺
+
+  - photo: TODO
+    title: TODO
+    date: TODO
+    corner_cn: TODO
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 6. Officers（干部）
+#    ⚠️ 现在 6 个人全是占位名：李雷/韩梅梅 是英语教科书人物，
+#    张三/李四/王五/赵六 相当于 John Doe。
+#
+#    你提过实际有 15 人。条数随便写，但注意：
+#    15 个人全放等大的卡片会失去层级，访客不知道该找谁。
+#    建议 exec 填 4–6 人（带照片），其余的人填在下面 committee 里（纯文字）。
+#
+#    ⚠️ 中文名、专业年级、照片都属于个人信息，逐个确认本人是否愿意公开。
+#    不愿意露脸的：photo 写 NONE，会用汉字印章块占位，不会显示成空洞。
+# ───────────────────────────────────────────────────────────────────────
+officers:
+  exec:
+    - role: TODO              # 例: President
+      role_cn: TODO           # 例: 会长
+      name: TODO              # 英文名
+      name_cn: TODO           # 中文名，不公开就写 NONE
+      detail: TODO            # 例: Third-year, Comparative Literature. 不公开写 NONE
+      photo: TODO             # 文件名；不愿露脸写 NONE
+
+    - role: TODO
+      role_cn: TODO
+      name: TODO
+      name_cn: TODO
+      detail: TODO
+      photo: TODO
+
+  # 其余干部，纯文字列表，不需要照片
+  committee:
+    - role: TODO              # 例: Publicity Officer
+      name: TODO
+      name_cn: TODO           # 不公开写 NONE
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 7. Join（加入我们）
+# ───────────────────────────────────────────────────────────────────────
+join:
+  heading: TODO               # 现在是「Sit down for a while.」，想留就照抄
+  heading_cn: TODO            # 现在是「我们在等你」
+  body: TODO
+
+  # 确认是否真的免会费——现在文案写了 no dues
+  no_dues: TODO               # true 或 false
+
+  # 主按钮指向哪里
+  cta_target: TODO            # email 或 instagram
+
+  # 指导老师
+  # ⚠️ 现在写的 Li Lei & Han Meimei 是占位，需要真实姓名和院系
+  advisor_name: TODO
+  advisor_department: TODO    # 例: Department of Modern Languages
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 8. SEO / 分享卡片
+# ───────────────────────────────────────────────────────────────────────
+seo:
+  # 搜索结果和分享链接时显示的描述
+  # 现在提到 tea ceremonies / calligraphy / Lunar New Year，
+  # 确认这些是否真的是社团在做的事
+  description: TODO
+
+  # 分享到微信/IG/Slack 时的预览图，1200×630，放 public/ 下
+  # 现在没有，链接分享出去是一片空白
+  og_image: TODO
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 9. 结尾诗句
+#    苏轼《水调歌头》「但愿人长久，千里共婵娟」+ 英文对照。
+#    这是真实引用，不用改。想换的话在这里写新的，否则保持 KEEP。
+# ───────────────────────────────────────────────────────────────────────
+epigraph: KEEP
