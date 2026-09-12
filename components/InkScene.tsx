@@ -29,7 +29,9 @@ type InkSceneProps = {
   stateRef: RefObject<ScrollState>
 }
 
-const MOBILE_SCENE_QUERY = '(max-width: 720px), (hover: none) and (pointer: coarse)'
+// Must stay in sync with the CSS guards on .story-transition and .scene-layer in
+// globals.css: the brush experience is ≥1024px + fine pointer only.
+const MOBILE_SCENE_QUERY = '(max-width: 1023px), (hover: none) and (pointer: coarse)'
 
 // Tuned together with the camera fov so the brush at scale 1.0 reads about
 // the same on-screen size as before the fov widening.
@@ -418,7 +420,10 @@ export default function InkScene(props: InkSceneProps) {
     return () => media.removeEventListener('change', update)
   }, [])
 
-  if (isMobile) return null
+  // Reduced motion drops the scene entirely (StoryShell also collapses the transition
+  // spacers, so the page becomes a plain stacked flow) — a frozen brush hovering over
+  // the page is worse than no brush.
+  if (isMobile || reducedMotion) return null
 
   return (
     <div className="scene-layer" aria-hidden="true">
@@ -426,7 +431,6 @@ export default function InkScene(props: InkSceneProps) {
         camera={{ position: [0, 0, 8], fov: 46, near: 0.1, far: 60 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true }}
-        frameloop={reducedMotion ? 'demand' : 'always'}
       >
         <SceneContents {...props} />
       </Canvas>

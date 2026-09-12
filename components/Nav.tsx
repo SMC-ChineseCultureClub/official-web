@@ -22,6 +22,9 @@ export default function Nav() {
       .map((id) => document.getElementById(id))
       .filter((section): section is HTMLElement => Boolean(section))
 
+    // Focus-line pattern: the active section is whichever one straddles the line 45%
+    // down the viewport (matches StoryShell's FOCUS_FRAC). A visibility threshold
+    // would never fire for sections taller than ~2.2 viewports (e.g. the gallery).
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -30,7 +33,7 @@ export default function Nav() {
           links.forEach((link) => link.classList.toggle('is-active', link.getAttribute('href') === `#${id}`))
         })
       },
-      { threshold: 0.45 }
+      { rootMargin: '-45% 0px -54% 0px', threshold: 0 }
     )
 
     sections.forEach((section) => io.observe(section))

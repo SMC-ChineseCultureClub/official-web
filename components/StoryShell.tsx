@@ -66,6 +66,18 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
     let segments: Seg[] = []
     const restByChapter = new Map<ChapterId, RestSeg>()
 
+    // Under reduced motion the transition spacers are display:none (height 0) and the
+    // brush scene is gone, so transition segments are skipped entirely: --fade stays
+    // at 1 everywhere and the page becomes a plain stacked flow.
+    const rmMedia = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let reducedMotion = rmMedia.matches
+    const onRmChange = () => {
+      reducedMotion = rmMedia.matches
+      pendingMeasure = true
+      schedule()
+    }
+    rmMedia.addEventListener('change', onRmChange)
+
     const buildSegments = (): Seg[] => {
       const root = rootRef.current
       if (!root) return []
@@ -84,7 +96,7 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
           const seg: RestSeg = { kind: 'rest', chapter: chapter as ChapterId, el, top, bottom }
           out.push(seg)
           restByChapter.set(seg.chapter, seg)
-        } else if (transition) {
+        } else if (transition && !reducedMotion) {
           const from = el.dataset.from as ChapterId
           const to = el.dataset.to as ChapterId
           out.push({ kind: 'transition', id: transition as TransitionId, from, to, el, top, bottom })
@@ -189,6 +201,7 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
       if (rafId != null) cancelAnimationFrame(rafId)
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
+      rmMedia.removeEventListener('change', onRmChange)
       ro.disconnect()
     }
   }, [])

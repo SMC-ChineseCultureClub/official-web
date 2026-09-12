@@ -243,7 +243,7 @@ a { color: inherit; }
   pointer-events: none;
 }
 
-@media (max-width: 720px), (hover: none) and (pointer: coarse) {
+@media (max-width: 1023px), (hover: none) and (pointer: coarse) {
   .story-transition {
     display: none;
     height: 0;
@@ -1210,11 +1210,15 @@ section {
 .epigraph__couplet--left .epigraph__trans { margin-left: auto; }
 .epigraph__couplet--right .epigraph__trans { margin-right: auto; }
 
-@media (max-width: 720px) {
+/* Brush scene is ≥1024px only — must stay in sync with MOBILE_SCENE_QUERY in
+   InkScene.tsx and the .story-transition guard above. */
+@media (max-width: 1023px) {
   .scene-layer {
     display: none;
   }
+}
 
+@media (max-width: 720px) {
   .epigraph {
     min-height: auto;
     padding: clamp(72px, 13vh, 112px) var(--gutter);
@@ -1328,4 +1332,9 @@ footer {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .in, .reveal > * { opacity: 1 !important; transform: none !important; }
+  /* Plain stacked flow: no scroll spacers, no brush, no transition dimming.
+     StoryShell also skips transition segments entirely under reduced motion. */
+  .story-transition { display: none; }
+  .scene-layer { display: none; }
+  .chapter-content { opacity: 1 !important; transform: none !important; }
 }
