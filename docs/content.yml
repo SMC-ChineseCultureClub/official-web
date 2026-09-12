@@ -42,9 +42,13 @@ site:
   campus_address: 1900 Pico Boulevard, Santa Monica, CA        # 例: 1900 Pico Boulevard, Santa Monica, CA
 
   # 固定会议时间。出现在：About 数据块（短版）、Join 信息表（长版）
-  meeting_time_short: "Thu 11:15AM"    # 例: "Thu 11:15AM"
-  meeting_time_long: "Thursdays · 11:15 AM — 12:30 PM"     # 例: "Thursdays · 11:15 AM — 12:30 PM"
-  # 注：会议时间为每两周的周四举行一次，即 Every other Thursday。你可能需要寻找一个合适的设计在保证 UI 好看的同时表述清楚。
+  #
+  # ⚠️ 会议是【每两周一次】。原表单漏了这个字段，导致全站文案一直在暗示 weekly
+  #    （About 的标签原本写的就是「Weekly hour」）。
+  #    英文 biweekly 有歧义（也可指一周两次），全站统一用 every other。
+  meeting_frequency: every other week
+  meeting_time_short: "Thu 11:15AM"
+  meeting_time_long: "Every other Thursday · 11:15 AM — 12:30 PM"
 
   # 联系方式
   email: chineseculture.smc@gmail.com                 # 例: chineseculture.smc@gmail.com
@@ -217,7 +221,15 @@ join:
   cta_target: TODO            # email 或 instagram
 
   # 指导老师
-  # ⚠️ 现在写的 Li Lei & Han Meimei 是占位，需要真实姓名和院系
+  # ⚠️⚠️ 上线前必须替换 —— 这是目前唯一一处「明知是假、且决定暂时留着」的内容。
+  #
+  #   现状：页面上写的 Li Lei & Han Meimei 是占位（英语教科书人物），
+  #         院系写的 Department of Modern Languages 也未经核实。
+  #   负责人：需要向社团 advisor 本人 / Office of Student Life 索取
+  #          真实姓名与所属院系。
+  #   时点：2026-09-12 确认信息暂时拿不到，上线前补。
+  #
+  #   ⛔ 在这两项填好之前，不要把 allow_search_indexing 改成 true。
   advisor_name: TODO
   advisor_department: TODO    # 例: Department of Modern Languages
 

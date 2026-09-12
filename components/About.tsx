@@ -32,7 +32,7 @@ export default function About() {
             <div className="about__pull">
               <div className="pull__cell"><span className="v">2025</span>Established</div>
               <div className="pull__cell"><span className="v">HSS 252</span>Where we meet</div>
-              <div className="pull__cell"><span className="v">Thu 11:15AM</span>Weekly hour</div>
+              <div className="pull__cell"><span className="v">Thu 11:15AM</span>Every other week</div>
             </div>
           </div>
 
