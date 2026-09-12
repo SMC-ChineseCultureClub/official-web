@@ -1117,6 +1117,34 @@ section {
 .join__copy p { color: var(--ink-soft); max-width: 50ch; margin: 0 0 28px; }
 .join__copy .actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
+/* Walk-in path: the second-biggest way people actually join, so it gets
+   body-copy weight rather than being left to the details list below. */
+.join__copy .join__walkin { color: var(--ink-soft); }
+.join__copy .join__walkin strong {
+  font-weight: 400; color: var(--ink);
+  border-bottom: 1px solid var(--ink-faint);
+}
+
+/* Handle rides inside the Instagram button, quieter than the label. */
+.join__handle {
+  font-family: var(--serif-body); font-style: normal;
+  font-size: 13px; letter-spacing: 0.12em;
+  opacity: 0.72;
+}
+
+/* Email is administrative, not a membership channel — demoted to fine print. */
+.join__copy .join__admin {
+  margin-top: 22px; margin-bottom: 0;
+  font-family: var(--serif-body); font-size: 13px; line-height: 1.7;
+  color: var(--ink-mute); max-width: 50ch;
+}
+.join__copy .join__admin a {
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--ink-faint);
+  text-decoration: none;
+}
+.join__copy .join__admin a:hover { color: var(--seal); border-bottom-color: var(--seal); }
+
 .join__where {
   font-family: var(--serif-body); font-size: 13px; color: var(--ink-soft);
 }

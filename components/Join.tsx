@@ -11,11 +11,25 @@ export default function Join() {
             kind manner. There are no dues. Bring nothing but yourself &mdash; or, if you wish, a
             tea you&apos;d like to share.
           </p>
+          <p className="join__walkin">
+            Or simply turn up. We meet in <strong>HSS 252</strong>, every other Thursday at 11:15 AM
+            &mdash; no sign-up, no introduction needed. Walking in is how most people join.
+          </p>
           <div className="actions">
-            <a className="btn-solid" href="mailto:chineseculture.smc@gmail.com">
-              Become a member &mdash; chineseculture.smc@gmail.com
+            <a
+              className="btn-solid"
+              href="https://www.instagram.com/smc.ccc_/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Follow us on Instagram <span className="join__handle">@smc.ccc_</span>
             </a>
           </div>
+          <p className="join__admin">
+            Announcements, event dates and photos all go out on Instagram first.
+            <br />
+            For club-to-club or student-government enquiries: <a href="mailto:chineseculture.smc@gmail.com">chineseculture.smc@gmail.com</a>
+          </p>
         </div>
 
         <dl className="join__where">
