@@ -26,7 +26,7 @@ export default function Join() {
           </dd>
           <dt>When we meet</dt>
           <dd>
-            Thursday: 11:15AM - 12:30PM
+            Thursdays · 11:15 AM — 12:30 PM
             <span className="small">Open-door, all semester long</span>
           </dd>
           <dt>Faculty advisor</dt>

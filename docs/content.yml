@@ -27,28 +27,29 @@
 site:
   # 社团成立年份。出现在：Hero 副标题、About 数据块、Nav 品牌行、Footer 版权
   # 现在站内写的是 2025，但 Gallery 里有 2023 的活动，自相矛盾
-  founded_year: TODO          # 例: 2025
+  founded_year: 2025          # 例: 2025
 
   # Footer 版权年份（通常是今年）
-  copyright_year: TODO        # 例: 2026
+  copyright_year: 2026        # 例: 2026
 
   # 当前 board 的届别，显示为「The 2026 board.」
-  board_year: TODO            # 例: 2026
+  board_year: 2026            # 例: 2026
 
   # 固定会议地点。出现在：About 数据块、Join 信息表
   # 现在 About/Join 写 HSS 151，但 Events 里出现过 HSS 152
-  meeting_room: TODO          # 例: HSS 151
-  meeting_building: TODO      # 例: Humanities & Social Science
-  campus_address: TODO        # 例: 1900 Pico Boulevard, Santa Monica, CA
+  meeting_room: HSS 252          # 例: HSS 151
+  meeting_building: Humanities & Social Science      # 例: Humanities & Social Science
+  campus_address: 1900 Pico Boulevard, Santa Monica, CA        # 例: 1900 Pico Boulevard, Santa Monica, CA
 
   # 固定会议时间。出现在：About 数据块（短版）、Join 信息表（长版）
-  meeting_time_short: TODO    # 例: "Thu 11:15AM"
-  meeting_time_long: TODO     # 例: "Thursdays · 11:15 AM — 12:30 PM"
+  meeting_time_short: "Thu 11:15AM"    # 例: "Thu 11:15AM"
+  meeting_time_long: "Thursdays · 11:15 AM — 12:30 PM"     # 例: "Thursdays · 11:15 AM — 12:30 PM"
+  # 注：会议时间为每两周的周四举行一次，即 Every other Thursday。你可能需要寻找一个合适的设计在保证 UI 好看的同时表述清楚。
 
   # 联系方式
-  email: TODO                 # 例: chineseculture.smc@gmail.com
-  instagram_handle: TODO      # 例: smc.ccc_   （不要带 @ 和网址）
-  smc_clubs_url: TODO         # SMC 官网社团页，填前请点开确认还有效
+  email: chineseculture.smc@gmail.com                 # 例: chineseculture.smc@gmail.com
+  instagram_handle: smc.ccc_      # 例: smc.ccc_   （不要带 @ 和网址）
+  smc_clubs_url: "https://www.smc.edu/community/office-of-student-life/student-government/clubs/chinese-culture-club.php"         # SMC 官网社团页，填前请点开确认还有效
 
   # 网站域名（影响 SEO metadata 和 public/CNAME）
   domain: TODO                # 例: ccc.peterguan.com
@@ -64,9 +65,11 @@ site:
 hero:
   # 首屏大段介绍。现在这段是编的，需要一句能代表社团真实调性的话
   lede: TODO
+  # 这里我希望你能帮助我编写一下。我们在SMC社团官网上的介绍是“The purpose of the Chinese Culture Club is to promote and celebrate Chinese culture, language, traditions, and heritage while fostering cultural awareness, diversity, and community among students through educational and social activities”。用一句话总结就是宣传中国文化 + social club。
 
   # 中文小字副标题，现在是「a quieter way of belonging.」
   tagline_en: TODO
+  # 这里我也希望你可以给我一些建议。
 
   # ⚠️ 三个数字。现在写的 240+ 会员 / 14 场活动 / II 年 全是编的。
   # 编造会员数是最容易被拆穿、也最伤信誉的一项。
@@ -75,10 +78,10 @@ hero:
   # （例如 Founded 2025 / Open to all majors / No dues）——
   # 留个假数字比没有这块更糟。
   stats:
-    - value: TODO             # 例: 240+
-      label: TODO             # 例: active members
+    - value: 10+             # 例: 240+
+      label: Events / Year             # 例: active members
     - value: TODO
-      label: TODO
+      label: Open to all background # 这里我想表达的意思是所有人都欢迎，不只是中国文化背景的人。我不确定这样写是不是足够好，如果你有更好的表达方式可以使用。
     - value: TODO
       label: TODO
 
@@ -94,9 +97,10 @@ about:
   # 「中秋切八块月饼」全是编的。
   # ⚠️ 如果要写创始人真名，必须本人同意——这会公开显示。
   body: TODO
+  # 这段我们一会仔细聊一聊，你帮我一起编辑。同时创始人真名不要出现。
 
   # 第三段（现在是「No fluency, no prior knowledge, no Chinese surname required.」）
-  closing: TODO
+  closing: TODO # 保持现有这段我觉得挺好的
 
 
 # ───────────────────────────────────────────────────────────────────────
