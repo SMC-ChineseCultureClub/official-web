@@ -7,7 +7,6 @@ import Officers from '@/components/Officers'
 import Join from '@/components/Join'
 import Epigraph from '@/components/Epigraph'
 import Footer from '@/components/Footer'
-import InstagramFeed from '@/components/InstagramFeed'
 import ScrollReveal from '@/components/ScrollReveal'
 import StoryShell from '@/components/StoryShell'
 import Transition from '@/components/Transition'
@@ -31,7 +30,6 @@ export default function Page() {
         <Transition from="join" to="epigraph" />
         <Epigraph />
         <div className="divider" />
-        <InstagramFeed />
         <Footer />
       </StoryShell>
       <ScrollReveal />

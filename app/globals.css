@@ -1117,12 +1117,11 @@ section {
 .join__copy p { color: var(--ink-soft); max-width: 50ch; margin: 0 0 28px; }
 .join__copy .actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
-/* Walk-in path: the second-biggest way people actually join, so it gets
-   body-copy weight rather than being left to the details list below. */
-.join__copy .join__walkin { color: var(--ink-soft); }
-.join__copy .join__walkin strong {
-  font-weight: 400; color: var(--ink);
-  border-bottom: 1px solid var(--ink-faint);
+/* One scannable line in place of the old paragraphs. */
+.join__copy .join__lede {
+  font-family: var(--serif-body); font-size: 12px;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--ink-mute); margin: 0 0 32px;
 }
 
 /* Handle rides inside the Instagram button, quieter than the label. */
@@ -1132,18 +1131,15 @@ section {
   opacity: 0.72;
 }
 
-/* Email is administrative, not a membership channel — demoted to fine print. */
-.join__copy .join__admin {
-  margin-top: 22px; margin-bottom: 0;
-  font-family: var(--serif-body); font-size: 13px; line-height: 1.7;
-  color: var(--ink-mute); max-width: 50ch;
+/* Meeting details beside the Instagram embed. auto-fit lets the pair sit side
+   by side where there is room and stack in the narrow brush lane, with no
+   breakpoint to keep in sync. */
+.join__details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
 }
-.join__copy .join__admin a {
-  color: var(--ink-soft);
-  border-bottom: 1px solid var(--ink-faint);
-  text-decoration: none;
-}
-.join__copy .join__admin a:hover { color: var(--seal); border-bottom-color: var(--seal); }
 
 .join__where {
   font-family: var(--serif-body); font-size: 13px; color: var(--ink-soft);
@@ -1292,47 +1288,17 @@ section {
   }
 }
 
-/* ───── INSTAGRAM ─────
+/* ───── INSTAGRAM (inside Join) ─────
    Meta's iframe is cross-origin and unstylable, and what it returns varies
    (full 2x3 grid on a fresh request, bare avatar card once Instagram throttles,
-   nothing at all behind tracking prevention). So the frame around it carries
-   the section: heading, handle and link out all live in our own markup, and the
-   embed is mounted on a paper surface rather than floating as a white slab. */
-.ig {
-  padding: clamp(64px, 9vh, 110px) var(--gutter) clamp(48px, 7vh, 84px);
-  border-top: 1px solid var(--ink-faint);
-}
-
-.ig__inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: clamp(32px, 5vw, 72px);
-  align-items: center;
-}
-
-.ig__title {
-  font-family: var(--serif-display); font-weight: 300;
-  font-size: clamp(30px, 4vw, 52px); line-height: 1.06;
-  letter-spacing: -0.015em; color: var(--ink);
-  margin: 14px 0 0;
-}
-.ig__title .it { font-style: italic; color: var(--seal); }
-.ig__title .cn {
-  display: block; margin-top: 14px;
-  font-family: var(--serif-cn); font-size: 15px;
-  letter-spacing: 0.3em; color: var(--ink-mute);
-}
-
-.ig__lede {
-  color: var(--ink-soft); max-width: 42ch;
-  margin: 20px 0 26px;
-}
-
+   nothing at all behind tracking prevention). It is mounted on a paper surface
+   rather than floating as a white slab, and the Join CTA carries the link out
+   on its own. */
 /* Mount for the embed: reserves height so the arriving iframe does not shove
    the footer down, and gives the white card a paper surround. */
 .ig__frame {
   display: flex; align-items: center; justify-content: center;
-  width: min(100%, 540px); min-height: 340px;
+  width: 100%; max-width: 540px; min-height: 340px;
   padding: 14px;
   background: var(--paper-deep);
   border: 1px solid var(--ink-faint);
@@ -1356,10 +1322,6 @@ section {
 .ig__fallback-text strong { font-weight: 400; color: var(--ink); }
 .ig__fallback:hover .ig__fallback-text strong { color: var(--seal); }
 
-@media (max-width: 880px) {
-  .ig__inner { grid-template-columns: 1fr; }
-  .ig__frame { width: 100%; margin: 0 auto; }
-}
 
 /* ───── FOOTER ───── */
 footer {

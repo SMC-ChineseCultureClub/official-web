@@ -158,14 +158,8 @@ export const TRANSITIONS: Record<TransitionId, TransitionTrack> = {
 }
 
 // ─── Ink-trail profiles ───
-// The brush leaves wet-ink marks while it sweeps across the paper. Each
-// transition is weighted separately because the arcs differ in character:
-// `about-to-events` is a calligraphic stroke laid flat on the page and earns
-// the densest trail, and `gallery-to-officers` starts late because its lateral
-// travel only begins on the return. `gallery-to-officers` also carries a higher
-// alpha than it looks like it needs, to offset the depth fade in InkScene
-// eating roughly a quarter of its opacity while the brush is far back.
-// A `null` profile means the transition paints nothing at all.
+// The brush leaves wet-ink marks while it sweeps across the paper, on three of
+// the six transitions. The other three are `null` and paint nothing at all.
 export type TrailProfile = {
   /** Local-progress window during which marks may be emitted. */
   window: [number, number]
@@ -179,11 +173,10 @@ export type TrailProfile = {
 
 export const TRAIL_PROFILES: Record<TransitionId, TrailProfile | null> = {
   'hero-to-about':       { window: [0.38, 0.98], interval: 0.045, alpha: 1.00, scale: 1.00 },
-  'about-to-events':     { window: [0.12, 0.92], interval: 0.040, alpha: 1.05, scale: 1.00 },
+  'about-to-events':     null,
   'events-to-gallery':   { window: [0.10, 0.72], interval: 0.058, alpha: 1.05, scale: 1.00 },
-  'gallery-to-officers': { window: [0.50, 0.96], interval: 0.055, alpha: 1.15, scale: 1.05 },
+  'gallery-to-officers': null,
   'officers-to-join':    { window: [0.12, 0.88], interval: 0.058, alpha: 1.05, scale: 0.95 },
-  // Join → Epigraph stays clean: the closing verse is read against bare paper.
   'join-to-epigraph':    null,
 }
 

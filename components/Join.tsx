@@ -1,3 +1,5 @@
+import InstagramEmbed from '@/components/InstagramEmbed'
+
 export default function Join() {
   return (
     <section className="join" id="join" data-story-chapter="join" data-rest-side="left" data-theme="ink" data-screen-label="06 Join">
@@ -6,15 +8,7 @@ export default function Join() {
         <div className="join__copy">
           <h2>Sit down <em>for a while.</em></h2>
           <p className="cn-line">我 们 在 等 你</p>
-          <p>
-            Membership is open all semester to any SMC student, faculty member, or visitor with a
-            kind manner. There are no dues. Bring nothing but yourself &mdash; or, if you wish, a
-            tea you&apos;d like to share.
-          </p>
-          <p className="join__walkin">
-            Or simply turn up. We meet in <strong>HSS 252</strong>, every other Thursday at 11:15 AM
-            &mdash; no sign-up, no introduction needed. Walking in is how most people join.
-          </p>
+          <p className="join__lede">Open to everyone &nbsp;·&nbsp; No dues &nbsp;·&nbsp; Just walk in</p>
           <div className="actions">
             <a
               className="btn-solid"
@@ -25,30 +19,28 @@ export default function Join() {
               Follow us on Instagram <span className="join__handle">@smc.ccc_</span>
             </a>
           </div>
-          <p className="join__admin">
-            Announcements, event dates and photos all go out on Instagram first.
-            <br />
-            For club-to-club or student-government enquiries: <a href="mailto:chineseculture.smc@gmail.com">chineseculture.smc@gmail.com</a>
-          </p>
         </div>
 
-        <dl className="join__where">
-          <dt>Where to find us</dt>
-          <dd>
-            Humanities &amp; Social Science · Rm 252
-            <span className="small">1900 Pico Boulevard, Santa Monica, CA</span>
-          </dd>
-          <dt>When we meet</dt>
-          <dd>
-            Every other Thursday · 11:15 AM — 12:30 PM
-            <span className="small">Open-door, all semester long</span>
-          </dd>
-          <dt>Faculty advisor</dt>
-          <dd>
-            Li Lei &amp; Han Meimei
-            <span className="small">Department of Modern Languages</span>
-          </dd>
-        </dl>
+        <div className="join__details">
+          <dl className="join__where">
+            <dt>When we meet</dt>
+            <dd>
+              Every other Thursday
+              <span className="small">11:15 AM — 12:30 PM</span>
+            </dd>
+            <dt>Where to find us</dt>
+            <dd>
+              HSS 252
+              <span className="small">Humanities &amp; Social Science · 1900 Pico Blvd</span>
+            </dd>
+            <dt>Faculty advisor</dt>
+            <dd>
+              Li Lei &amp; Han Meimei
+              <span className="small">Department of Modern Languages</span>
+            </dd>
+          </dl>
+          <InstagramEmbed />
+        </div>
       </div>
       </div>
     </section>

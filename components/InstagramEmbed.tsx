@@ -10,7 +10,7 @@ type InstgrmWindow = Window & {
 }
 
 /**
- * Instagram profile embed, wrapped in our own frame.
+ * Instagram profile embed, mounted inside the Join section.
  *
  * Meta's embed.js renders a cross-origin iframe we cannot style, and what it
  * returns is not deterministic: a fresh request usually yields the profile card
@@ -20,17 +20,17 @@ type InstgrmWindow = Window & {
  * the link out — carries the section on its own; the iframe is a bonus rather
  * than the payload. See docs/instagram-embed.md.
  */
-export default function InstagramFeed() {
-  const sectionRef = useRef<HTMLElement>(null)
+export default function InstagramEmbed() {
+  const frameRef = useRef<HTMLDivElement>(null)
   const holderRef = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
   const [failed, setFailed] = useState(false)
 
-  // Don't contact Meta at all until the reader approaches this section — most
+  // Don't contact Meta at all until the reader approaches the embed — most
   // visitors never scroll this far, and there is no reason to hand Instagram
-  // their IP for a section they will not see.
+  // their IP for something they will not see.
   useEffect(() => {
-    const el = sectionRef.current
+    const el = frameRef.current
     if (!el) return
     const io = new IntersectionObserver(
       (entries) => {
@@ -112,40 +112,19 @@ export default function InstagramFeed() {
   }, [inView])
 
   return (
-    <section className="ig" id="instagram" ref={sectionRef}>
-      <div className="wrap ig__inner">
-        <div className="ig__copy in">
-          <p className="section-head__no">
-            <span className="dot"></span>Keeping up &nbsp;/&nbsp; Day to day
-          </p>
-          <h2 className="ig__title">
-            Where the news <span className="it">actually</span> lands.
-            <span className="cn">最 新 消 息</span>
-          </h2>
-          <p className="ig__lede">
-            Event dates, room changes, and photographs from the last gathering go out on
-            Instagram first &mdash; often before they reach this page.
-          </p>
-          <a className="btn-ghost" href={PROFILE} target="_blank" rel="noopener noreferrer">
-            @{HANDLE} <span className="arrow"></span>
-          </a>
-        </div>
-
-        <div className="ig__frame in">
-          {/* Rendered empty on purpose — the effect fills it. See above. */}
-          <div className={failed ? 'ig__embed is-hidden' : 'ig__embed'} ref={holderRef} />
-          {failed && (
-            <a className="ig__fallback" href={PROFILE} target="_blank" rel="noopener noreferrer">
-              <span className="ig__fallback-cn">消 息</span>
-              <span className="ig__fallback-text">
-                Instagram could not load here.
-                <br />
-                See the latest at <strong>@{HANDLE}</strong>
-              </span>
-            </a>
-          )}
-        </div>
-      </div>
-    </section>
+    <div className="ig__frame" ref={frameRef}>
+      {/* Rendered empty on purpose — the effect fills it. See above. */}
+      <div className={failed ? 'ig__embed is-hidden' : 'ig__embed'} ref={holderRef} />
+      {failed && (
+        <a className="ig__fallback" href={PROFILE} target="_blank" rel="noopener noreferrer">
+          <span className="ig__fallback-cn">消 息</span>
+          <span className="ig__fallback-text">
+            Instagram could not load here.
+            <br />
+            See the latest at <strong>@{HANDLE}</strong>
+          </span>
+        </a>
+      )}
+    </div>
   )
 }
