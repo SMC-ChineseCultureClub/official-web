@@ -1115,50 +1115,16 @@ section {
 }
 
 .join__copy p { color: var(--ink-soft); max-width: 50ch; margin: 0 0 28px; }
-.join__copy .actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
-/* One scannable line in place of the old paragraphs. */
+/* The only copy besides the heading: when and where to walk in. Nav's
+   "Join us" lands here directly, so this line is not left to About or Hero. */
 .join__copy .join__lede {
   font-family: var(--serif-body); font-size: 12px;
   letter-spacing: 0.24em; text-transform: uppercase;
   color: var(--ink-mute); margin: 0 0 32px;
-}
-
-/* Handle rides inside the Instagram button, quieter than the label. */
-.join__handle {
-  font-family: var(--serif-body); font-style: normal;
-  font-size: 13px; letter-spacing: 0.12em;
-  opacity: 0.72;
-}
-
-/* Meeting details beside the Instagram embed. auto-fit lets the pair sit side
-   by side where there is room and stack in the narrow brush lane, with no
-   breakpoint to keep in sync. */
-.join__details {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: clamp(28px, 4vw, 56px);
-  align-items: start;
-}
-
-.join__where {
-  font-family: var(--serif-body); font-size: 13px; color: var(--ink-soft);
-}
-
-.join__where dt {
-  font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
-  color: var(--ink-mute); margin-bottom: 4px;
-}
-
-.join__where dd {
-  margin: 0 0 22px;
-  font-family: var(--serif-display); font-style: italic;
-  font-size: 20px; color: var(--ink); line-height: 1.4;
-}
-
-.join__where dd .small {
-  font-style: normal; font-family: var(--serif-body);
-  display: block; font-size: 13px; color: var(--ink-soft); margin-top: 2px;
+  /* The shared 50ch cap assumes body text; tracked uppercase runs far wider
+     per character, so it wrapped this single line at every desktop width. */
+  max-width: none;
 }
 
 /* ───── EPIGRAPH ───── */
@@ -1292,8 +1258,9 @@ section {
    Meta's iframe is cross-origin and unstylable, and what it returns varies
    (full 2x3 grid on a fresh request, bare avatar card once Instagram throttles,
    nothing at all behind tracking prevention). It is mounted on a paper surface
-   rather than floating as a white slab, and the Join CTA carries the link out
-   on its own. */
+   rather than floating as a white slab. It is the only call to action in Join:
+   every state it can end in links out (post grid, throttled profile card with
+   "View full profile", or our fallback), so no separate button is needed. */
 /* Mount for the embed: reserves height so the arriving iframe does not shove
    the footer down, and gives the white card a paper surround. */
 .ig__frame {
