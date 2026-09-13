@@ -35,13 +35,13 @@ site:
   # 当前 board 的届别，显示为「The 2026 board.」
   board_year: 2026            # 例: 2026
 
-  # 固定会议地点。出现在：About 数据块、Join 信息表
+  # 固定会议地点。出现在：Hero 三格、About 数据块、Join 信息表
   # 现在 About/Join 写 HSS 151，但 Events 里出现过 HSS 152
   meeting_room: HSS 252          # 例: HSS 151
   meeting_building: Humanities & Social Science      # 例: Humanities & Social Science
   campus_address: 1900 Pico Boulevard, Santa Monica, CA        # 例: 1900 Pico Boulevard, Santa Monica, CA
 
-  # 固定会议时间。出现在：About 数据块（短版）、Join 信息表（长版）
+  # 固定会议时间。出现在：Hero 三格、About 数据块（短版）、Join 信息表（长版）
   #
   # ⚠️ 会议是【每两周一次】。原表单漏了这个字段，导致全站文案一直在暗示 weekly
   #    （About 的标签原本写的就是「Weekly hour」）。
@@ -75,19 +75,17 @@ hero:
   tagline_en: TODO
   # 这里我也希望你可以给我一些建议。
 
-  # ⚠️ 三个数字。现在写的 240+ 会员 / 14 场活动 / II 年 全是编的。
-  # 编造会员数是最容易被拆穿、也最伤信誉的一项。
-  #
-  # 如果凑不出真实数字，把整块写成 REMOVE，或者换成不需要数字的说法
-  # （例如 Founded 2025 / Open to all majors / No dues）——
-  # 留个假数字比没有这块更糟。
+  # 首屏底部三格。最早的 240+ 会员 / 14 场活动 / II 年是编的，
+  # 中间一版 10+ events a year / ALL backgrounds welcome 也已撤下。
+  # 现在三格全是会议信息（时间 / 地点 / 频率），直接取自上面的 site.meeting_*——
+  # 改会议时间或地点时，这里要一起改。
   stats:
-    - value: 10+             # 例: 240+
-      label: Events / Year             # 例: active members
-    - value: TODO
-      label: Open to all background # 这里我想表达的意思是所有人都欢迎，不只是中国文化背景的人。我不确定这样写是不是足够好，如果你有更好的表达方式可以使用。
-    - value: TODO
-      label: TODO
+    - value: "11:15 AM"
+      label: until 12:30 PM
+    - value: HSS 252
+      label: where we meet
+    - value: Thu
+      label: every other week
 
 
 # ───────────────────────────────────────────────────────────────────────

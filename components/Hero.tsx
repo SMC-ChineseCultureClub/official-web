@@ -46,8 +46,8 @@ export default function Hero() {
 
         <div className="hero__foot">
           <div className="hero__meta reveal d-5">
-            <div><span className="num">10+</span>events a year</div>
-            <div><span className="num">ALL</span>backgrounds welcome</div>
+            <div><span className="num">11:15&nbsp;AM</span>until 12:30 PM</div>
+            <div><span className="num">HSS&nbsp;252</span>where we meet</div>
             <div><span className="num">Thu</span>every other week</div>
           </div>
           <div className="hero__scroll" aria-hidden="true">
