@@ -5,6 +5,7 @@ import { Environment, Sparkles, useGLTF } from '@react-three/drei'
 import { Suspense, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import * as THREE from 'three'
 import {
+  ANCHORED_RESTS,
   REST_POSES,
   TRAIL_PROFILES,
   TRANSITIONS,
@@ -23,6 +24,8 @@ export type ScrollState = {
   localProgress: number
   narrativeProgress: number
   theme: 'tea' | 'ink'
+  /** Document-space vertical midpoint of the active rest chapter; null during transitions. */
+  restMidY: number | null
 }
 
 type InkSceneProps = {
@@ -42,12 +45,15 @@ const BASE_EULER = new THREE.Euler(0, 0, 0)
 
 function BrushModel({
   handleMaterialsRef,
+  centerYRef,
 }: {
   handleMaterialsRef: RefObject<Map<THREE.Material, THREE.Color>>
+  /** Receives the y of the model's bounding-box center, in model space at scale 1. */
+  centerYRef: RefObject<number>
 }) {
   const { scene } = useGLTF('/models/chinese-calligraphy-brush/source/Chinese Calligraphy Brush.glb')
 
-  const model = useMemo(() => {
+  const { model, centerY } = useMemo(() => {
     const clone = scene.clone(true)
     clone.traverse((child) => {
       if (!(child instanceof THREE.Mesh)) return
@@ -55,8 +61,14 @@ function BrushModel({
         ? child.material.map((m: THREE.Material) => m.clone())
         : (child.material as THREE.Material).clone()
     })
-    return clone
+    // Measured before the clone is parented to the rig, so the box stays in model space.
+    const centerY = new THREE.Box3().setFromObject(clone).getCenter(new THREE.Vector3()).y
+    return { model: clone, centerY }
   }, [scene])
+
+  useEffect(() => {
+    centerYRef.current = centerY
+  }, [centerY, centerYRef])
 
   useEffect(() => {
     model.updateMatrixWorld(true)
@@ -218,6 +230,7 @@ function SceneContents({ stateRef }: InkSceneProps) {
   const brushRigRef = useRef<THREE.Group>(null)
   const rimLightRef = useRef<THREE.PointLight>(null)
   const handleMaterialsRef = useRef<Map<THREE.Material, THREE.Color>>(new Map())
+  const brushCenterYRef = useRef(0)
 
   const currentPose = useRef<Pose>({ ...REST_POSES.hero, rotation: [...REST_POSES.hero.rotation] as [number, number, number] })
   const currentAccent = useRef(new THREE.Color(REST_POSES.hero.accent))
@@ -289,9 +302,21 @@ function SceneContents({ stateRef }: InkSceneProps) {
     const halfW = (viewport.width / 2) * scaleByDist
     const halfH = (viewport.height / 2) * scaleByDist
 
+    // Anchored rests: once the section's midpoint has scrolled above the brush's
+    // center, lift the brush by the gap so the two stay aligned. Applied after
+    // damping so it moves rigidly with the page, and read from window.scrollY
+    // here rather than through StoryShell's RAF to avoid trailing by a frame.
+    let lift = 0
+    if (seg.kind === 'rest' && ANCHORED_RESTS.has(seg.chapter) && scroll?.restMidY != null) {
+      const sectionMid = 1 - (2 * (scroll.restMidY - window.scrollY)) / window.innerHeight
+      const brushMid = currentPose.current.yFrac
+        + (brushCenterYRef.current * MODEL_BASE_SCALE * currentPose.current.scale) / halfH
+      lift = Math.max(0, sectionMid - brushMid)
+    }
+
     rig.position.set(
       currentPose.current.xFrac * halfW,
-      currentPose.current.yFrac * halfH,
+      (currentPose.current.yFrac + lift) * halfH,
       currentPose.current.z,
     )
 
@@ -388,7 +413,7 @@ function SceneContents({ stateRef }: InkSceneProps) {
 
       <group ref={brushRigRef}>
         <Suspense fallback={null}>
-          <BrushModel handleMaterialsRef={handleMaterialsRef} />
+          <BrushModel handleMaterialsRef={handleMaterialsRef} centerYRef={brushCenterYRef} />
         </Suspense>
       </group>
 

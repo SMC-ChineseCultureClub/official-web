@@ -50,6 +50,12 @@ export const REST_POSES: Record<ChapterId, Pose> = {
   epigraph: { xFrac:  0.00, yFrac: -0.05, z:  0,    rotation: [0,    0,  0   ], scale: 1.35, accent: '#2a1f1a' },
 }
 
+// Rest chapters where the brush holds its viewport spot only until the section's
+// vertical midpoint scrolls up to the brush's own center; past that it rides up
+// with the page, so it stays centered on the content down to the bottom of the
+// scroll instead of ending up below it.
+export const ANCHORED_RESTS: ReadonlySet<ChapterId> = new Set(['epigraph'])
+
 // Helper to build keyframes with less boilerplate.
 const kf = (t: number, pose: Pose) => ({ t, pose })
 

@@ -38,7 +38,7 @@ const chapterMarks: Record<ChapterId, { glyph: string; phrase: string }> = {
   epigraph: { glyph: '诗', phrase: '落笔成章' },
 }
 
-type RestSeg = { kind: 'rest'; chapter: ChapterId; el: HTMLElement; top: number; bottom: number }
+type RestSeg = { kind: 'rest'; chapter: ChapterId; el: HTMLElement; top: number; bottom: number; mid: number }
 type TransSeg = { kind: 'transition'; id: TransitionId; from: ChapterId; to: ChapterId; el: HTMLElement; top: number; bottom: number }
 type Seg = RestSeg | TransSeg
 
@@ -49,6 +49,7 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
     localProgress: 0,
     narrativeProgress: 0,
     theme: 'tea',
+    restMidY: null,
   })
   const [activeChapter, setActiveChapter] = useState<ChapterId>('hero')
   const [narrativeProgress, setNarrativeProgress] = useState(0)
@@ -86,6 +87,7 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
       )
       const out: Seg[] = []
       restByChapter.clear()
+      const rootTop = root.getBoundingClientRect().top + window.scrollY
       for (const el of nodes) {
         const chapter = el.dataset.storyChapter
         const transition = el.dataset.storyTransition
@@ -93,7 +95,11 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
         const top = rect.top + window.scrollY
         const bottom = top + rect.height
         if (chapter && chapter !== 'footer') {
-          const seg: RestSeg = { kind: 'rest', chapter: chapter as ChapterId, el, top, bottom }
+          // Midpoint from layout offsets (sections are direct children of the root, their
+          // offsetParent) rather than the rect: the .in reveal holds a section 18px low
+          // until it scrolls into view, and nothing re-measures once it settles.
+          const mid = rootTop + el.offsetTop + el.offsetHeight / 2
+          const seg: RestSeg = { kind: 'rest', chapter: chapter as ChapterId, el, top, bottom, mid }
           out.push(seg)
           restByChapter.set(seg.chapter, seg)
         } else if (transition && !reducedMotion) {
@@ -140,6 +146,7 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
           : { kind: 'transition', id: current.id }
       scrollStateRef.current.localProgress = localProgress
       scrollStateRef.current.narrativeProgress = narrative
+      scrollStateRef.current.restMidY = current.kind === 'rest' ? current.mid : null
 
       // Theme follows the chapter the active-marker is on (pivots at t=0.5 in transitions).
       const pivotChapter: ChapterId =
