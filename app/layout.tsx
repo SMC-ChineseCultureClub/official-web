@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, Spectral } from 'next/font/google'
 import './globals.css'
+import { ALLOW_INDEXING, SHARE_DESCRIPTION, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '@/lib/site'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -21,28 +22,32 @@ const spectral = Spectral({
 export const viewport: Viewport = { themeColor: '#7B2121' }
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://ccc.peterguan.com'),
-  title: 'Chinese Culture Club — Santa Monica College',
-  description:
-    'Chinese Culture Club at Santa Monica College — a student society devoted to Chinese culture through tea ceremonies, calligraphy, Lunar New Year, and community open to everyone.',
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
   authors: [{ name: 'Chinese Culture Club at Santa Monica College' }],
-  robots: { index: false, follow: false },
+  robots: ALLOW_INDEXING ? { index: true, follow: true } : { index: false, follow: false },
   icons: {
-    icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
-    shortcut: '/favicon.svg',
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
   },
+  // og:image / twitter:image come from app/opengraph-image.jpg and
+  // app/twitter-image.jpg: a capture of the hero with the dated CTA, rail and
+  // nav links hidden. Re-capture if the hero changes.
   openGraph: {
     type: 'website',
-    title: 'Chinese Culture Club — Santa Monica College',
-    description:
-      'A student society at SMC devoted to Chinese culture — tea ceremonies, calligraphy, Lunar New Year, and a community open to everyone.',
+    siteName: 'Chinese Culture Club at SMC',
+    title: SITE_TITLE,
+    description: SHARE_DESCRIPTION,
     locale: 'en_US',
   },
   twitter: {
-    card: 'summary',
-    title: 'Chinese Culture Club — Santa Monica College',
-    description:
-      'A student society at SMC devoted to Chinese culture — tea ceremonies, calligraphy, Lunar New Year, and a community open to everyone.',
+    card: 'summary_large_image',
+    title: SITE_TITLE,
+    description: SHARE_DESCRIPTION,
   },
 }
 
