@@ -243,7 +243,7 @@ a { color: inherit; }
   pointer-events: none;
 }
 
-@media (max-width: 720px), (hover: none) and (pointer: coarse) {
+@media (max-width: 1023px), (hover: none) and (pointer: coarse) {
   .story-transition {
     display: none;
     height: 0;
@@ -301,14 +301,6 @@ a { color: inherit; }
     margin-left: auto;
   }
 
-  /* About: stack body text and scroll card vertically in the right-hand lane. */
-  [data-rest-side="left"] .about-grid {
-    grid-template-columns: 1fr;
-    gap: clamp(36px, 5vw, 64px);
-  }
-  /* The scroll card is decorative — let it sit at the top of the stack. */
-  [data-rest-side="left"] .about__scroll { order: -1; max-width: 520px; }
-
   /* Events featured: image atop body, with a wider aspect so the row is not
      too tall once it occupies a single column. */
   [data-rest-side="right"] .events-feature {
@@ -321,14 +313,8 @@ a { color: inherit; }
 
   /* Events list: tighter cell widths so the row fits the narrow lane. */
   [data-rest-side="right"] .event {
-    grid-template-columns: 84px 1.2fr 1fr 90px 22px;
+    grid-template-columns: 84px 1.2fr 1fr 150px 22px;
     gap: clamp(12px, 1.6vw, 24px);
-  }
-
-  /* Officers: 2-col instead of 3-col when squeezed into the lane. */
-  [data-rest-side="right"] .officers {
-    grid-template-columns: repeat(2, 1fr);
-    gap: clamp(28px, 4vw, 48px) clamp(24px, 3vw, 40px);
   }
 
   /* Join: stack copy and where dl vertically; copy on top reads first. */
@@ -346,10 +332,12 @@ a { color: inherit; }
   }
 
   /* Gallery: brush rests small in the top-left corner. Indent the whole grid
-     (and its section header) so the leftmost tiles clear the brush. */
+     (and its section header) so the leftmost tiles clear the brush, and match it
+     on the right, where the grid would otherwise run under the progress rail. */
   [data-rest-side="corner"] .gallery,
   [data-rest-side="corner"] .section-head {
     margin-left: clamp(60px, 8vw, 160px);
+    margin-right: clamp(60px, 8vw, 160px);
   }
 }
 
@@ -361,7 +349,12 @@ a { color: inherit; }
   display: flex; flex-direction: column; align-items: center; gap: 10px;
   transform: translateY(-50%);
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 420ms ease;
 }
+
+/* Marks cross-fade in place when the chapter changes. */
+.story-ideogram.is-active { opacity: 1; }
 
 .story-ideogram__glyph {
   font-family: var(--serif-cn);
@@ -417,6 +410,7 @@ a { color: inherit; }
 .hero__bg {
   position: absolute; inset: 0;
   pointer-events: none; overflow: hidden;
+  container-type: size; /* cqh for .glyph--col */
 }
 
 .hero__bg .glyph {
@@ -435,8 +429,13 @@ a { color: inherit; }
 .hero__bg .glyph--col {
   left: var(--gutter); top: 14%;
   writing-mode: vertical-rl;
-  font-size: clamp(20px, 1.6vw, 26px);
+  /* The column runs ~25.5em from top: 14%, and .hero__bg clips it. Its height
+     tracks the hero content, not the width the font scales with, so cap the size
+     by that height (3.3cqh ≈ 84% of it): on a short or very wide hero it would
+     otherwise lose its last characters, or wrap into a second column over the title. */
+  font-size: min(clamp(20px, 1.6vw, 26px), 3.3cqh);
   letter-spacing: 0.6em; color: var(--ink-mute);
+  white-space: nowrap;
   opacity: 0;
   animation: fadeColumn 1800ms 700ms ease forwards;
 }
@@ -491,14 +490,14 @@ a { color: inherit; }
 .hero__title .em { font-style: italic; font-weight: 300; color: var(--ink-soft); }
 .hero__title .amp { font-style: italic; font-weight: 300; color: var(--seal); padding: 0 0.06em; }
 
+/* CTA sits beside the tagline rather than under it — a row of its own pushes the
+   meeting details below the fold — and hugs it from the left, clear of the brush
+   resting at the right. Wraps under the tagline on narrow screens. */
 .hero__sub-row {
-  display: grid; grid-template-columns: 1.4fr 1fr;
-  gap: clamp(24px, 6vw, 96px);
+  display: flex; flex-wrap: wrap; align-items: center;
+  column-gap: clamp(40px, 5vw, 80px); row-gap: 28px;
   margin-top: clamp(36px, 6vh, 64px);
-  align-items: start;
 }
-
-@media (max-width: 820px) { .hero__sub-row { grid-template-columns: 1fr; } }
 
 .hero__cn {
   font-family: var(--serif-cn); font-weight: 400;
@@ -512,17 +511,33 @@ a { color: inherit; }
   letter-spacing: 0.42em; color: var(--ink-mute);
 }
 
-.hero__lede {
-  font-family: var(--serif-body); font-weight: 300;
-  font-size: clamp(15px, 1.05vw, 17px);
-  line-height: 1.7; color: var(--ink-soft);
-  max-width: 38ch; text-wrap: pretty;
+/* Same pill as .nav__cta, one size up. The nav's CTA is hidden ≤820px, so on
+   phones this is the only call to action above the fold. */
+.hero__cta {
+  display: inline-block;
+  font-family: var(--serif-display);
+  font-style: italic; font-size: 18px;
+  color: var(--ink); text-decoration: none;
+  padding: 11px 26px;
+  border: 1px solid var(--ink); border-radius: 999px;
+  transition: background 240ms ease, color 240ms ease;
 }
-
-.hero__lede em {
-  font-family: var(--serif-display); font-style: italic;
-  font-size: 1.15em; color: var(--ink);
+.hero__cta-kicker {
+  font-family: var(--serif-body); font-style: normal;
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--seal); margin-right: 12px; vertical-align: 0.15em;
+  transition: color 240ms ease;
 }
+/* Phones: the kicker would push the arrow onto a second line inside the pill. */
+@media (max-width: 480px) {
+  .hero__cta { white-space: nowrap; }
+  .hero__cta-kicker { display: none; }
+}
+.hero__cta:hover .hero__cta-kicker,
+.hero__cta:focus-visible .hero__cta-kicker { color: var(--paper); }
+/* .reveal clips overflow, which would cut off a focus outline — fill instead. */
+.hero__cta:hover,
+.hero__cta:focus-visible { background: var(--ink); color: var(--paper); outline: none; }
 
 .hero__foot {
   margin-top: clamp(48px, 9vh, 96px);
@@ -617,118 +632,57 @@ section {
 /* ───── ABOUT ───── */
 #about { padding-top: clamp(60px, 10vh, 120px); }
 
-.about-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: clamp(40px, 7vw, 120px); align-items: start;
-}
-
-@media (max-width: 880px) { .about-grid { grid-template-columns: 1fr; } }
+/* Pull the title in toward the eyebrow; the shared 200px column is kept so the
+   eyebrow wraps the same as in other sections. */
+#about .section-head { column-gap: clamp(16px, 1.6vw, 24px); }
 
 .about__lead {
   font-family: var(--serif-display); font-weight: 300;
   font-size: clamp(24px, 2.4vw, 36px);
   line-height: 1.3; color: var(--ink);
-  margin: 0 0 28px; text-wrap: balance;
+  margin: 0; max-width: 28ch; text-wrap: balance;
 }
 
 .about__lead em { font-style: italic; color: var(--ink-soft); }
 
-.about__lead .seal-mark {
-  display: inline-block; vertical-align: -0.05em;
-  width: 0.55em; height: 0.55em;
-  background: var(--seal); margin: 0 0.1em 0 0.05em;
-  transform: rotate(-3deg);
+/* What we do: a scannable 2×2 instead of a paragraph. */
+.about__do {
+  list-style: none; padding: 0;
+  margin: clamp(32px, 5vh, 48px) 0 0;
+  max-width: 620px; /* clear of .story-rail at the right edge */
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(24px, 3vw, 48px);
 }
 
-.about__body p {
-  font-size: 16px; color: var(--ink-soft);
-  margin: 0 0 18px; max-width: 56ch;
-}
+@media (max-width: 520px) { .about__do { grid-template-columns: 1fr; } }
 
-.about__body p + p { text-indent: 2em; }
-
-.about__pull {
+.about__do li {
   border-top: 1px solid var(--ink-faint);
-  margin-top: 36px; padding-top: 32px;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  padding: 16px 0 18px;
+  display: flex; flex-direction: column; gap: 4px;
 }
 
-.pull__cell {
-  font-family: var(--serif-body);
-  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--ink-mute);
-}
-
-.pull__cell .v {
-  display: block;
+.about__do-what {
   font-family: var(--serif-display); font-style: italic;
-  font-weight: 400; text-transform: none; letter-spacing: 0;
-  font-size: 30px; color: var(--ink); margin-bottom: 4px;
+  font-size: 24px; line-height: 1.2; color: var(--ink);
 }
 
-.about__scroll {
-  position: relative;
-  padding: clamp(20px, 3vw, 36px);
-  border: 1px solid var(--ink-faint);
-  background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0));
-}
+.about__do-note { font-size: 15px; color: var(--ink-soft); }
 
-.about__scroll::before {
-  content: ""; position: absolute; top: -1px; left: -1px;
-  width: 14px; height: 14px;
-  border-top: 1px solid var(--ink); border-left: 1px solid var(--ink);
-}
-
-.about__scroll::after {
-  content: ""; position: absolute; bottom: -1px; right: -1px;
-  width: 14px; height: 14px;
-  border-bottom: 1px solid var(--ink); border-right: 1px solid var(--ink);
-}
-
-.about__scroll .cn-vert {
-  font-family: var(--serif-cn);
-  writing-mode: vertical-rl;
-  font-size: clamp(20px, 2vw, 26px);
-  letter-spacing: 0.38em; color: var(--ink);
-  line-height: 1.8; margin: 0 auto; display: block;
-}
-
-.about__scroll .cn-vert .accent { color: var(--seal); }
-
-.about__scroll-row {
-  display: flex; justify-content: center; align-items: center;
-  min-height: 320px; gap: clamp(24px, 4vw, 56px);
-}
-
-.about__scroll-row .seal-lg {
-  width: 76px; height: 76px;
-  background: var(--seal); color: var(--paper);
-  display: grid; place-items: center;
-  font-family: var(--serif-cn); font-size: 44px; line-height: 1;
-  transform: rotate(-4deg);
-  box-shadow: 0 0 0 0.5px rgba(255,255,255,0.2) inset, 0 1px 0 rgba(0,0,0,0.2) inset, 0 8px 24px -10px rgba(123,33,33,0.4);
-  position: relative; align-self: flex-start; margin-top: 24px;
-}
-
-.about__scroll-row .seal-lg::after {
-  content: ""; position: absolute; inset: -1px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.91  0 0 0 0 0.83  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  mix-blend-mode: screen; opacity: 0.55; pointer-events: none;
+.about__closing {
+  font-size: 16px; color: var(--ink-soft);
+  margin: clamp(20px, 3vh, 32px) 0 0; max-width: 56ch;
 }
 
 /* ───── EVENTS ───── */
-#events { background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.02) 100%); }
-
-.events-list { border-top: 1px solid var(--ink-faint); }
+.events-list { position: relative; }
 
 .event {
   display: grid;
   grid-template-columns: 140px 1fr 1.4fr 180px 24px;
   gap: clamp(16px, 3vw, 40px); align-items: center;
-  padding: 28px 0;
-  border-bottom: 1px solid var(--ink-faint);
+  padding: 16px 0;
   position: relative; text-decoration: none; color: inherit;
-  cursor: pointer;
   transition: padding-left 500ms cubic-bezier(.2,.7,.2,1), color 500ms ease;
 }
 
@@ -740,18 +694,35 @@ section {
   z-index: -1;
 }
 
-.event:hover { padding-left: 24px; color: var(--paper); }
-.event:hover::before { width: 100%; }
+/* The rule above the list and under each row, drawn left to right once it
+   scrolls into view (EventsBoard adds .is-drawn). Darker where the brush lands,
+   then settling. */
+.events-list::before,
+.event::after {
+  content: ""; position: absolute;
+  left: 0; right: 0; bottom: 0; height: 1px;
+  background: linear-gradient(90deg, var(--ink-soft), var(--ink-faint) 22%);
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform 1100ms cubic-bezier(.6,.05,.25,1);
+}
 
-.event:hover .event__date .day,
-.event:hover .event__date .mon,
-.event:hover .event__title,
-.event:hover .event__title-cn,
-.event:hover .event__meta,
-.event:hover .event__cta { color: var(--paper); }
+.events-list::before { top: 0; bottom: auto; }
 
-.event:hover .event__rule { background: var(--paper); }
-.event:hover .event__title em { color: var(--paper); }
+.events-list.is-drawn::before,
+.event.is-drawn::after { transform: scaleX(1); }
+
+/* Only rows that link somewhere get the ink-fill hover. */
+a.event:hover { padding-left: 24px; color: var(--paper); }
+a.event:hover::before { width: 100%; }
+
+a.event:hover .event__date .day,
+a.event:hover .event__date .mon,
+a.event:hover .event__title,
+a.event:hover .event__title em,
+a.event:hover .event__sub,
+a.event:hover .event__meta,
+a.event:hover .event__meta .label,
+a.event:hover .event__cta { color: var(--paper); }
 
 .event__date {
   display: flex; flex-direction: column;
@@ -759,15 +730,15 @@ section {
 }
 
 .event__date .day {
-  font-size: clamp(40px, 4vw, 58px); font-weight: 300;
+  font-size: clamp(32px, 3vw, 44px); font-weight: 300;
   color: var(--ink); letter-spacing: -0.02em;
   transition: color 360ms ease;
 }
 
 .event__date .mon {
-  margin-top: 6px;
+  margin-top: 4px;
   font-family: var(--serif-body);
-  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
   color: var(--ink-mute); transition: color 360ms ease;
 }
 
@@ -779,10 +750,10 @@ section {
 
 .event__title em { font-style: italic; color: var(--ink-soft); }
 
-.event__title-cn {
-  display: block; font-family: var(--serif-cn);
-  font-size: 13px; letter-spacing: 0.32em;
-  color: var(--seal); margin-top: 8px; transition: color 360ms ease;
+.event__sub {
+  display: block; font-family: var(--serif-body);
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--seal); margin-top: 6px; transition: color 360ms ease;
 }
 
 .event__meta {
@@ -792,9 +763,9 @@ section {
 }
 
 .event__meta .label {
-  display: block; font-size: 10px;
+  display: block; font-size: 10px; line-height: 1.4;
   letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--ink-mute); margin-bottom: 4px; transition: color 360ms ease;
+  color: var(--ink-mute); margin-bottom: 2px; transition: color 360ms ease;
 }
 
 .event__cta {
@@ -803,15 +774,24 @@ section {
   text-align: right; transition: color 360ms ease, transform 500ms cubic-bezier(.2,.7,.2,1);
 }
 
-.event:hover .event__cta { transform: translateX(6px); }
+a.event:hover .event__cta { transform: translateX(6px); }
 
-.event__rule { display: none; }
+/* Where/when sit in .event__info: their own two grid cells on wide rows,
+   two unlabeled lines under the title on narrow ones. */
+.event__info { display: contents; }
 
 @media (max-width: 980px) {
-  .event { grid-template-columns: 100px 1fr 24px; row-gap: 4px; }
-  .event__meta { grid-column: 2 / 3; }
-  .event__cta { grid-column: 3 / 4; }
-  .event__title-cn { margin-top: 4px; }
+  .event { grid-template-columns: 84px 1fr 24px; row-gap: 4px; }
+  .event__date { grid-row: span 2; }
+  .event__info { display: block; grid-column: 2 / 3; }
+  .event__meta .label { display: none; }
+  .event__cta { grid-column: 3 / 4; grid-row: 1 / 3; }
+  .event__sub { margin-top: 4px; }
+}
+
+@media (max-width: 600px) {
+  .event { padding: 14px 0; }
+  .events-feature__meta { column-gap: 28px; row-gap: 16px; margin-bottom: 0; }
 }
 
 /* Featured event */
@@ -823,40 +803,18 @@ section {
 
 @media (max-width: 880px) { .events-feature { grid-template-columns: 1fr; } }
 
+/* No photo: the body takes the full row. */
+.events-feature--text { grid-template-columns: 1fr; }
+
 .events-feature__img {
   position: relative; width: 100%; aspect-ratio: 5 / 4;
   background: var(--paper-deep); overflow: hidden;
   border: 1px solid var(--ink-faint); min-width: 0;
 }
 
-.stripes {
+.events-feature__img img {
   position: absolute; inset: 0;
-  background-image: repeating-linear-gradient(135deg, transparent 0 18px, rgba(26,22,18,0.045) 18px 19px);
-}
-
-.placeholder-label {
-  position: absolute; left: 18px; top: 18px;
-  font-family: var(--serif-body);
-  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--ink-mute);
-  background: var(--paper); padding: 6px 10px;
-  border: 1px solid var(--ink-faint);
-}
-
-.events-feature__img .corner-cn {
-  position: absolute; right: 24px; bottom: 18px;
-  font-family: var(--serif-cn); font-size: 56px;
-  color: var(--ink); opacity: 0.16; line-height: 1; letter-spacing: -0.05em;
-}
-
-.events-feature__img .seal-stamp {
-  position: absolute; right: 28px; top: 28px;
-  width: 56px; height: 56px;
-  background: var(--seal); color: var(--paper);
-  display: grid; place-items: center;
-  font-family: var(--serif-cn); font-size: 30px;
-  transform: rotate(4deg);
-  box-shadow: 0 0 0 0.5px rgba(255,255,255,0.2) inset, 0 4px 14px -6px rgba(123,33,33,0.4);
+  width: 100%; height: 100%; object-fit: cover;
 }
 
 .events-feature__body {
@@ -902,6 +860,13 @@ section {
   font-weight: 400; text-transform: none; letter-spacing: 0;
   font-size: 22px; color: var(--ink); margin-bottom: 4px;
 }
+
+.events-empty {
+  font-family: var(--serif-display); font-style: italic;
+  font-size: clamp(22px, 2vw, 28px); color: var(--ink-soft); margin: 0;
+}
+
+.events-empty a { color: var(--ink); }
 
 /* Buttons */
 .btn-ghost {
@@ -953,74 +918,67 @@ section {
 
 .tile:hover { transform: translateY(-4px); }
 
-.tile .stripes {
-  background-image: repeating-linear-gradient(135deg, transparent 0 16px, rgba(26,22,18,0.05) 16px 17px);
-}
+.tile__img { object-fit: cover; }
 
-.tile .placeholder-label {
-  left: 14px; top: 14px;
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
-  backdrop-filter: blur(2px);
-}
-
-.tile .corner-cn {
-  position: absolute; bottom: 14px; right: 18px;
-  font-family: var(--serif-cn);
-  font-size: clamp(40px, 5vw, 72px);
-  color: var(--ink); opacity: 0.18; line-height: 1;
-}
-
+/* A solid paper label, like a museum placard: a gradient fading into the photo
+   leaves the text unreadable over busy shots. */
 .tile .caption {
-  position: absolute; left: 14px; right: 14px; bottom: 14px;
-  display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
-  background: linear-gradient(to top,
-    color-mix(in srgb, var(--paper) 96%, transparent),
-    color-mix(in srgb, var(--paper) 0%, transparent));
-  padding: 22px 4px 6px;
+  position: absolute; left: 12px; bottom: 12px; max-width: calc(100% - 24px);
+  display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 12px; row-gap: 2px;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  padding: 5px 10px 6px;
 }
 
 .tile .caption .t {
   font-family: var(--serif-display); font-size: 18px; font-style: italic;
-  color: var(--ink);
+  line-height: 1.25; color: var(--ink);
 }
 
 .tile .caption .d {
   font-family: var(--serif-body);
   font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--ink-mute);
+  color: var(--ink-soft);
 }
 
-/* Grid spans */
+/* Grid spans. Each row has one tile whose aspect ratio sets the row's height
+   (1, 5, 7); the others stretch to it, so a row's tiles always line up. Every
+   tile spans its full columns — left to size itself, an empty figure with an
+   aspect ratio shrinks and opens uneven gaps. */
+.tile { width: 100%; margin: 0; } /* figure's UA margin would inset every tile */
 .t-1 { grid-column: span 5; aspect-ratio: 5/4; }
-.t-2 { grid-column: span 4; aspect-ratio: 1/1; }
-.t-3 { grid-column: span 3; aspect-ratio: 3/4; }
-.t-4 { grid-column: span 3; aspect-ratio: 1/1; }
+.t-2 { grid-column: span 4; }
+.t-3 { grid-column: span 3; }
+.t-4 { grid-column: span 3; }
 .t-5 { grid-column: span 6; aspect-ratio: 16/9; }
-.t-6 { grid-column: span 3; aspect-ratio: 1/1; }
+.t-6 { grid-column: span 3; }
 .t-7 { grid-column: span 4; aspect-ratio: 4/5; }
-.t-8 { grid-column: span 4; aspect-ratio: 4/5; }
-.t-9 { grid-column: span 4; aspect-ratio: 4/5; }
+.t-8 { grid-column: span 4; }
+.t-9 { grid-column: span 4; }
 
+/* Two columns: three full-width 3:2 tiles and six 4:5 halves, packed densely so
+   no half is left beside a gap. */
 @media (max-width: 880px) {
-  .gallery { grid-template-columns: repeat(6, 1fr); }
-  .t-1, .t-5 { grid-column: span 6; }
-  .t-2, .t-3, .t-4, .t-6, .t-7, .t-8, .t-9 { grid-column: span 3; }
+  .gallery { grid-template-columns: repeat(6, 1fr); grid-auto-flow: dense; }
+  .tile { grid-column: span 3; aspect-ratio: 4/5; }
+  .t-1, .t-5, .t-8 { grid-column: span 6; aspect-ratio: 3/2; }
 }
 
+/* Phones keep the two-column layout from above (single-column 3:2 crops cut the
+   portrait photos in half); captions stack to fit the narrow tiles. */
 @media (max-width: 600px) {
-  .gallery { grid-template-columns: 1fr; gap: 16px; }
-  .t-1,.t-2,.t-3,.t-4,.t-5,.t-6,.t-7,.t-8,.t-9 { grid-column: span 1; aspect-ratio: 3 / 2; }
-  .tile .placeholder-label { display: none; }
+  .gallery { gap: 10px; }
+  .tile .caption { left: 8px; bottom: 8px; max-width: calc(100% - 16px); flex-direction: column; padding: 4px 8px 5px; }
+  .tile .caption .t { font-size: 15px; line-height: 1.2; }
+  .tile .caption .d { font-size: 9px; }
 }
 
 /* ───── OFFICERS ───── */
+/* Three contacts, larger, then everyone else as a headshot wall. */
 .officers {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: clamp(28px, 4vw, 64px) clamp(20px, 3vw, 48px);
+  gap: clamp(20px, 2.4vw, 36px);
 }
-
-@media (max-width: 880px) { .officers { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 520px) { .officers { grid-template-columns: 1fr; } }
 
 .officer { display: flex; flex-direction: column; }
 
@@ -1030,52 +988,74 @@ section {
   border: 1px solid var(--ink-faint); overflow: hidden;
 }
 
-.officer__photo .stripes {
-  background-image: repeating-linear-gradient(135deg, transparent 0 14px, rgba(26,22,18,0.05) 14px 15px);
-}
-
-.officer__photo .corner-cn {
-  position: absolute; right: 16px; bottom: 12px;
-  font-family: var(--serif-cn); font-size: 56px; line-height: 1;
-  color: var(--ink); opacity: 0.18;
-}
-
-.officer__photo .ph-tag {
-  position: absolute; left: 14px; top: 14px;
-  font-family: var(--serif-body);
-  font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--ink-mute); background: var(--paper);
-  padding: 5px 8px; border: 1px solid var(--ink-faint);
-}
+.officer__photo img,
+.member__photo img { object-fit: cover; }
 
 .officer__body {
-  padding-top: 22px; border-top: 1px solid var(--ink-faint); margin-top: 22px;
-  display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: start;
+  padding-top: 14px; border-top: 1px solid var(--ink-faint); margin-top: 16px;
 }
 
 .officer__role {
   font-family: var(--serif-body);
   font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
-  color: var(--ink-mute); margin-bottom: 8px;
+  color: var(--ink-soft); margin: 0 0 6px;
 }
 
 .officer__name {
   font-family: var(--serif-display); font-weight: 400;
-  font-size: 26px; line-height: 1.1; margin: 0; color: var(--ink);
+  font-size: clamp(22px, 1.9vw, 26px); line-height: 1.1; margin: 0; color: var(--ink);
 }
 
-.officer__name .it { font-style: italic; color: var(--ink-soft); }
-
-.officer__cn {
-  font-family: var(--serif-cn); font-size: 22px;
-  color: var(--seal); letter-spacing: 0.06em; line-height: 1;
-  padding-top: 18px;
-}
-
-.officer__pron {
-  margin-top: 10px;
+.board__contact {
+  margin: clamp(32px, 5vh, 48px) 0 0;
+  padding-top: clamp(20px, 3vh, 28px); border-top: 1px solid var(--ink-faint);
   font-family: var(--serif-display); font-style: italic;
-  font-size: 15px; color: var(--ink-soft);
+  font-size: clamp(18px, 1.5vw, 21px); color: var(--ink-soft);
+}
+
+.board__contact a {
+  color: var(--ink); text-decoration: underline;
+  text-decoration-color: var(--ink-faint); text-underline-offset: 4px;
+}
+
+.board__contact a:hover { text-decoration-color: var(--ink); }
+
+.members {
+  list-style: none; margin: clamp(40px, 6vh, 64px) 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 24px 16px;
+}
+
+.member__photo {
+  position: relative; aspect-ratio: 1;
+  background: var(--paper-deep);
+  border: 1px solid var(--ink-faint); overflow: hidden;
+}
+
+.member__name {
+  margin: 10px 0 2px;
+  font-family: var(--serif-display); font-size: 17px; line-height: 1.15; color: var(--ink);
+}
+
+.member__role {
+  margin: 0;
+  font-family: var(--serif-body);
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 720px) {
+  .members { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Phones: contacts become compact rows (photo beside the text); the wall goes
+   three across. */
+@media (max-width: 520px) {
+  .officers { grid-template-columns: 1fr; gap: 16px; }
+  .officer { display: grid; grid-template-columns: 96px 1fr; gap: 16px; align-items: center; }
+  .officer__body { margin-top: 0; padding-top: 0; border-top: 0; }
+  .members { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 12px; }
+  .member__name { font-size: 15px; }
 }
 
 /* ───── JOIN ───── */
@@ -1115,26 +1095,16 @@ section {
 }
 
 .join__copy p { color: var(--ink-soft); max-width: 50ch; margin: 0 0 28px; }
-.join__copy .actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
-.join__where {
-  font-family: var(--serif-body); font-size: 13px; color: var(--ink-soft);
-}
-
-.join__where dt {
-  font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
-  color: var(--ink-mute); margin-bottom: 4px;
-}
-
-.join__where dd {
-  margin: 0 0 22px;
-  font-family: var(--serif-display); font-style: italic;
-  font-size: 20px; color: var(--ink); line-height: 1.4;
-}
-
-.join__where dd .small {
-  font-style: normal; font-family: var(--serif-body);
-  display: block; font-size: 13px; color: var(--ink-soft); margin-top: 2px;
+/* The only copy besides the heading: when and where to walk in. Nav's
+   "Join us" lands here directly, so this line is not left to About or Hero. */
+.join__copy .join__lede {
+  font-family: var(--serif-body); font-size: 12px;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--ink-mute); margin: 0 0 32px;
+  /* The shared 50ch cap assumes body text; tracked uppercase runs far wider
+     per character, so it wrapped this single line at every desktop width. */
+  max-width: none;
 }
 
 /* ───── EPIGRAPH ───── */
@@ -1153,7 +1123,7 @@ section {
   grid-template-areas:
     ". center ."
     "left center right"
-    ". center credit";
+    ". center .";
   column-gap: clamp(12px, 2vw, 36px);
   row-gap: clamp(20px, 5vh, 56px);
   align-items: center;
@@ -1161,11 +1131,6 @@ section {
   min-height: clamp(380px, 60vh, 620px);
   margin: 0 auto;
   text-align: left;
-}
-
-.epigraph__rule {
-  width: 1px; height: clamp(40px, 6vh, 72px);
-  background: linear-gradient(to bottom, transparent, var(--ink-faint));
 }
 
 .epigraph__verse {
@@ -1185,40 +1150,45 @@ section {
   white-space: nowrap;
 }
 
-.epigraph__line--left {
+.epigraph__couplet {
+  display: block;
+}
+
+.epigraph__couplet--left {
   grid-area: left;
   justify-self: end;
   text-align: right;
 }
 
-.epigraph__line--right {
+.epigraph__couplet--right {
   grid-area: right;
   justify-self: start;
   text-align: left;
 }
 
-.epigraph__credit {
-  grid-area: credit;
-  justify-self: start;
-  align-self: start;
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-}
-
-.epigraph__source {
+.epigraph__trans {
+  display: block;
+  margin-top: clamp(10px, 1.4vh, 18px);
   font-family: var(--serif-display); font-style: italic;
-  font-weight: 400; font-size: clamp(13px, 1vw, 15px);
-  letter-spacing: 0.04em; color: var(--ink-mute); margin: 0;
-  max-width: min(18ch, 100%);
-  line-height: 1.35;
+  font-weight: 400; font-size: clamp(13px, 1.05vw, 16px);
+  letter-spacing: 0.04em; line-height: 1.5;
+  color: var(--ink-mute);
+  white-space: normal;
+  max-width: 100%;
 }
 
-@media (max-width: 720px) {
+.epigraph__couplet--left .epigraph__trans { margin-left: auto; }
+.epigraph__couplet--right .epigraph__trans { margin-right: auto; }
+
+/* Brush scene is ≥1024px only — must stay in sync with MOBILE_SCENE_QUERY in
+   InkScene.tsx and the .story-transition guard above. */
+@media (max-width: 1023px) {
   .scene-layer {
     display: none;
   }
+}
 
+@media (max-width: 720px) {
   .epigraph {
     min-height: auto;
     padding: clamp(72px, 13vh, 112px) var(--gutter);
@@ -1245,29 +1215,60 @@ section {
     white-space: normal;
   }
 
-  .epigraph__line--left,
-  .epigraph__line--right {
+  .epigraph__couplet--left,
+  .epigraph__couplet--right {
     justify-self: auto;
     text-align: center;
   }
 
-  .epigraph__credit {
-    justify-self: auto;
-    align-self: auto;
-    justify-content: center;
-    max-width: min(100%, 20rem);
-    padding-top: 6px;
+  .epigraph__couplet + .epigraph__couplet {
+    margin-top: clamp(18px, 5vw, 28px);
   }
 
-  .epigraph__rule {
-    height: 46px;
-  }
-
-  .epigraph__source {
-    max-width: 18ch;
-    text-align: left;
+  .epigraph__trans {
+    margin-top: 10px;
+    font-size: clamp(13px, 3.7vw, 15px);
+    max-width: min(30ch, 100%);
+    margin-left: auto;
+    margin-right: auto;
   }
 }
+
+/* ───── INSTAGRAM (inside Join) ─────
+   Meta's iframe is cross-origin and unstylable, and what it returns varies
+   (full 2x3 grid on a fresh request, bare avatar card once Instagram throttles,
+   nothing at all behind tracking prevention). It is mounted on a paper surface
+   rather than floating as a white slab. It is the only call to action in Join:
+   every state it can end in links out (post grid, throttled profile card with
+   "View full profile", or our fallback), so no separate button is needed. */
+/* Mount for the embed: reserves height so the arriving iframe does not shove
+   the footer down, and gives the white card a paper surround. */
+.ig__frame {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; max-width: 540px; min-height: 340px;
+  padding: 14px;
+  background: var(--paper-deep);
+  border: 1px solid var(--ink-faint);
+}
+.ig__frame .instagram-media { border-radius: 0 !important; }
+.ig__embed { width: 100%; }
+.ig__embed.is-hidden { display: none; }
+
+.ig__fallback {
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  padding: 40px 28px; text-decoration: none; text-align: center;
+}
+.ig__fallback-cn {
+  font-family: var(--serif-cn); font-size: 40px; letter-spacing: 0.2em;
+  color: var(--ink); opacity: 0.2;
+}
+.ig__fallback-text {
+  font-family: var(--serif-body); font-size: 14px; line-height: 1.8;
+  color: var(--ink-mute);
+}
+.ig__fallback-text strong { font-weight: 400; color: var(--ink); }
+.ig__fallback:hover .ig__fallback-text strong { color: var(--seal); }
+
 
 /* ───── FOOTER ───── */
 footer {
@@ -1337,4 +1338,10 @@ footer {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .in, .reveal > * { opacity: 1 !important; transform: none !important; }
+  /* Plain stacked flow: no scroll spacers, no brush, no transition dimming.
+     StoryShell also skips transition segments entirely under reduced motion. */
+  .story-transition { display: none; }
+  .scene-layer { display: none; }
+  .chapter-content { opacity: 1 !important; transform: none !important; }
+  .events-list::before, .event::after { transform: none !important; }
 }

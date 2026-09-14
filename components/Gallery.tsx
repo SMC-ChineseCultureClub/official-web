@@ -1,3 +1,31 @@
+import Image from 'next/image'
+
+// DEMO ONLY — cropped from Instagram screenshots to preview the layout for the
+// board. Replace with the original photos before launch (docs/launch-plan.md).
+// Tiles take their shape from position (.t-1 … .t-9 in globals.css), so order
+// matters: 1 5:4 · 2 square · 3 3:4 · 4 square · 5 16:9 · 6 square · 7–9 4:5.
+// `focus` is the object-position that keeps the subject in frame.
+const archive = [
+  { src: '/gallery/lantern-festival.webp', title: 'Lantern Festival', date: 'Apr ’26',
+    alt: 'A classroom of members paper-cutting at the Lantern Festival meeting' },
+  { src: '/gallery/club-row.webp', title: 'Club Row', date: 'May ’26', focus: '50% 30%',
+    alt: 'Officers holding a paper dragon behind the club booth at Club Row' },
+  { src: '/gallery/lacquer-fan-brush.webp', title: 'Calligraphy on Lacquer Fans', date: 'Nov ’25',
+    alt: 'A marbled lacquer fan brushed with calligraphy' },
+  { src: '/gallery/enamel-lions.webp', title: 'Plaster Lions', date: 'May ’26',
+    alt: 'Members painting small plaster guardian lions' },
+  { src: '/gallery/club-awareness.webp', title: 'Club Awareness', date: 'Mar ’26', focus: '50% 60%',
+    alt: 'Members at the Club Awareness booth holding calligraphy and paper-cuts' },
+  { src: '/gallery/liuli-bracelet.webp', title: 'Liuli Bracelets', date: 'May ’26',
+    alt: 'A handmade colored-glaze bead bracelet on a wrist' },
+  { src: '/gallery/lacquer-fans.webp', title: 'Lacquer Fans', date: 'Nov ’25',
+    alt: 'Hands holding freshly marbled lacquer fans over the dipping bowl' },
+  { src: '/gallery/international-day.webp', title: 'International Day', date: 'May ’25', focus: '50% 30%',
+    alt: 'A guzheng performance at the club booth on the Quad' },
+  { src: '/gallery/mid-autumn.webp', title: 'Mid-Autumn Festival', date: 'Oct ’25',
+    alt: 'Mooncakes and gifts laid out for the Mid-Autumn meeting' },
+]
+
 export default function Gallery() {
   return (
     <section id="gallery" data-story-chapter="gallery" data-rest-side="corner" data-theme="ink" data-screen-label="04 Gallery">
@@ -12,95 +40,23 @@ export default function Gallery() {
         </header>
 
         <div className="gallery in">
-          <figure className="tile t-1">
-            <span className="stripes"></span>
-            <span className="placeholder-label">photo · dumpling kitchen, 2025</span>
-            <span className="corner-cn">饺</span>
-            <figcaption className="caption">
-              <span className="t">Lunar New Year, MMXXV</span>
-              <span className="d">Feb &lsquo;25</span>
-            </figcaption>
-          </figure>
-
-          <figure className="tile t-2">
-            <span className="stripes"></span>
-            <span className="placeholder-label">portrait · calligraphy hands</span>
-            <span className="corner-cn">墨</span>
-            <figcaption className="caption">
-              <span className="t">Brushwork at HSS 152</span>
-              <span className="d">Oct &lsquo;24</span>
-            </figcaption>
-          </figure>
-
-          <figure className="tile t-3">
-            <span className="stripes"></span>
-            <span className="placeholder-label">candid · the long table</span>
-            <span className="corner-cn">锅</span>
-            <figcaption className="caption">
-              <span className="t">Hot Pot Night</span>
-              <span className="d">Nov &lsquo;24</span>
-            </figcaption>
-          </figure>
-
-          <figure className="tile t-4">
-            <span className="stripes"></span>
-            <span className="placeholder-label">still life · mooncakes &amp; tea</span>
-            <span className="corner-cn">月</span>
-            <figcaption className="caption">
-              <span className="t">Mid-Autumn</span>
-              <span className="d">Sep &lsquo;24</span>
-            </figcaption>
-          </figure>
-
-          <figure className="tile t-5">
-            <span className="stripes"></span>
-            <span className="placeholder-label">wide · concourse hall, gala</span>
-            <span className="corner-cn">春节</span>
-            <figcaption className="caption">
-              <span className="t">Gala &amp; Banquet</span>
-              <span className="d">Feb &lsquo;24</span>
-            </figcaption>
-          </figure>
-
-          <figure className="tile t-6">
-            <span className="stripes"></span>
-            <span className="placeholder-label">detail · couplet, red paper</span>
-            <span className="corner-cn">福</span>
-            <figcaption className="caption">
-              <span className="t">Spring Couplets</span>
-              <span className="d">Jan &lsquo;24</span>
-            </figcaption>
-          </figure>
-
-          <figure className="tile t-7">
-            <span className="stripes"></span>
-            <span className="placeholder-label">portrait · tea ceremony</span>
-            <span className="corner-cn">茶</span>
-            <figcaption className="caption">
-              <span className="t">Tea, Quiet Hour</span>
-              <span className="d">May &lsquo;24</span>
-            </figcaption>
-          </figure>
-
-          <figure className="tile t-8">
-            <span className="stripes"></span>
-            <span className="placeholder-label">action · lion dance, courtyard</span>
-            <span className="corner-cn">狮</span>
-            <figcaption className="caption">
-              <span className="t">Lion Dance Visitors</span>
-              <span className="d">Feb &lsquo;23</span>
-            </figcaption>
-          </figure>
-
-          <figure className="tile t-9">
-            <span className="stripes"></span>
-            <span className="placeholder-label">still · zongzi making</span>
-            <span className="corner-cn">粽</span>
-            <figcaption className="caption">
-              <span className="t">Dragon Boat</span>
-              <span className="d">Jun &lsquo;23</span>
-            </figcaption>
-          </figure>
+          {archive.map((item, i) => (
+            <figure className={`tile t-${i + 1}`} key={item.src}>
+              <Image
+                className="tile__img"
+                src={item.src}
+                alt={item.alt}
+                fill
+                unoptimized
+                sizes="(max-width: 880px) 50vw, 40vw"
+                style={item.focus ? { objectPosition: item.focus } : undefined}
+              />
+              <figcaption className="caption">
+                <span className="t">{item.title}</span>
+                <span className="d">{item.date}</span>
+              </figcaption>
+            </figure>
+          ))}
         </div>
       </div>
       </div>

@@ -1,3 +1,6 @@
+import NextEventCta from '@/components/NextEventCta'
+import { pacificToday } from '@/lib/events'
+
 export default function Hero() {
   return (
     <section className="hero" id="top" data-story-chapter="hero" data-rest-side="right" data-screen-label="01 Hero">
@@ -36,19 +39,15 @@ export default function Hero() {
             </p>
           </div>
           <div className="reveal d-5">
-            <p className="hero__lede">
-              We are a student society at Santa Monica College devoted to{' '}
-              <em>the slow art</em> of Chinese culture &mdash; tea poured carefully,
-              ink set against paper, and friendships that last beyond the semester.
-            </p>
+            <NextEventCta buildDate={pacificToday()} />
           </div>
         </div>
 
         <div className="hero__foot">
           <div className="hero__meta reveal d-5">
-            <div><span className="num">240+</span>active members</div>
-            <div><span className="num">14</span>events / year</div>
-            <div><span className="num">II</span>years of brewing tea</div>
+            <div><span className="num">11:15&nbsp;AM</span>until 12:30 PM</div>
+            <div><span className="num">HSS&nbsp;252</span>where we meet</div>
+            <div><span className="num">Thu</span>every other week</div>
           </div>
           <div className="hero__scroll" aria-hidden="true">
             Scroll <span className="v-rule"></span>

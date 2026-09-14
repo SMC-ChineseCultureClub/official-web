@@ -50,6 +50,12 @@ export const REST_POSES: Record<ChapterId, Pose> = {
   epigraph: { xFrac:  0.00, yFrac: -0.05, z:  0,    rotation: [0,    0,  0   ], scale: 1.35, accent: '#2a1f1a' },
 }
 
+// Rest chapters where the brush holds its viewport spot only until the section's
+// vertical midpoint scrolls up to the brush's own center; past that it rides up
+// with the page, so it stays centered on the content down to the bottom of the
+// scroll instead of ending up below it.
+export const ANCHORED_RESTS: ReadonlySet<ChapterId> = new Set(['epigraph'])
+
 // Helper to build keyframes with less boilerplate.
 const kf = (t: number, pose: Pose) => ({ t, pose })
 
@@ -155,6 +161,29 @@ export const TRANSITIONS: Record<TransitionId, TransitionTrack> = {
       kf(1.00, REST_POSES.epigraph),
     ],
   },
+}
+
+// ─── Ink-trail profiles ───
+// The brush leaves wet-ink marks while it sweeps across the paper, on three of
+// the six transitions. The other three are `null` and paint nothing at all.
+export type TrailProfile = {
+  /** Local-progress window during which marks may be emitted. */
+  window: [number, number]
+  /** Rate cap, in seconds, between marks. Smaller = denser. */
+  interval: number
+  /** Opacity multiplier applied to every mark from this transition. */
+  alpha: number
+  /** Size multiplier applied to every mark from this transition. */
+  scale: number
+}
+
+export const TRAIL_PROFILES: Record<TransitionId, TrailProfile | null> = {
+  'hero-to-about':       { window: [0.38, 0.98], interval: 0.045, alpha: 1.00, scale: 1.00 },
+  'about-to-events':     null,
+  'events-to-gallery':   { window: [0.10, 0.72], interval: 0.058, alpha: 1.05, scale: 1.00 },
+  'gallery-to-officers': null,
+  'officers-to-join':    { window: [0.12, 0.88], interval: 0.058, alpha: 1.05, scale: 0.95 },
+  'join-to-epigraph':    null,
 }
 
 // Adjacent-chapter pair → transition id, for StoryShell wiring.

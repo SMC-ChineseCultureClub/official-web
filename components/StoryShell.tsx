@@ -28,17 +28,17 @@ const themeForChapter: Record<ChapterId, 'tea' | 'ink'> = {
   epigraph: 'tea',
 }
 
-const chapterMarks: Record<ChapterId, { glyph: string; phrase: string }> = {
+// Events and Board have no mark: the brush rests on the right there, so their
+// content starts at the left edge, right where the mark would sit on top of it.
+const chapterMarks: Partial<Record<ChapterId, { glyph: string; phrase: string }>> = {
   hero:     { glyph: '墨', phrase: '一笔起势' },
   about:    { glyph: '文', phrase: '文化有根' },
-  events:   { glyph: '礼', phrase: '相聚成礼' },
   gallery:  { glyph: '集', phrase: '记忆成卷' },
-  officers: { glyph: '会', phrase: '众手成局' },
   join:     { glyph: '来', phrase: '来者入席' },
   epigraph: { glyph: '诗', phrase: '落笔成章' },
 }
 
-type RestSeg = { kind: 'rest'; chapter: ChapterId; el: HTMLElement; top: number; bottom: number }
+type RestSeg = { kind: 'rest'; chapter: ChapterId; el: HTMLElement; top: number; bottom: number; mid: number }
 type TransSeg = { kind: 'transition'; id: TransitionId; from: ChapterId; to: ChapterId; el: HTMLElement; top: number; bottom: number }
 type Seg = RestSeg | TransSeg
 
@@ -49,6 +49,7 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
     localProgress: 0,
     narrativeProgress: 0,
     theme: 'tea',
+    restMidY: null,
   })
   const [activeChapter, setActiveChapter] = useState<ChapterId>('hero')
   const [narrativeProgress, setNarrativeProgress] = useState(0)
@@ -66,6 +67,18 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
     let segments: Seg[] = []
     const restByChapter = new Map<ChapterId, RestSeg>()
 
+    // Under reduced motion the transition spacers are display:none (height 0) and the
+    // brush scene is gone, so transition segments are skipped entirely: --fade stays
+    // at 1 everywhere and the page becomes a plain stacked flow.
+    const rmMedia = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let reducedMotion = rmMedia.matches
+    const onRmChange = () => {
+      reducedMotion = rmMedia.matches
+      pendingMeasure = true
+      schedule()
+    }
+    rmMedia.addEventListener('change', onRmChange)
+
     const buildSegments = (): Seg[] => {
       const root = rootRef.current
       if (!root) return []
@@ -74,6 +87,7 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
       )
       const out: Seg[] = []
       restByChapter.clear()
+      const rootTop = root.getBoundingClientRect().top + window.scrollY
       for (const el of nodes) {
         const chapter = el.dataset.storyChapter
         const transition = el.dataset.storyTransition
@@ -81,10 +95,14 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
         const top = rect.top + window.scrollY
         const bottom = top + rect.height
         if (chapter && chapter !== 'footer') {
-          const seg: RestSeg = { kind: 'rest', chapter: chapter as ChapterId, el, top, bottom }
+          // Midpoint from layout offsets (sections are direct children of the root, their
+          // offsetParent) rather than the rect: the .in reveal holds a section 18px low
+          // until it scrolls into view, and nothing re-measures once it settles.
+          const mid = rootTop + el.offsetTop + el.offsetHeight / 2
+          const seg: RestSeg = { kind: 'rest', chapter: chapter as ChapterId, el, top, bottom, mid }
           out.push(seg)
           restByChapter.set(seg.chapter, seg)
-        } else if (transition) {
+        } else if (transition && !reducedMotion) {
           const from = el.dataset.from as ChapterId
           const to = el.dataset.to as ChapterId
           out.push({ kind: 'transition', id: transition as TransitionId, from, to, el, top, bottom })
@@ -128,6 +146,7 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
           : { kind: 'transition', id: current.id }
       scrollStateRef.current.localProgress = localProgress
       scrollStateRef.current.narrativeProgress = narrative
+      scrollStateRef.current.restMidY = current.kind === 'rest' ? current.mid : null
 
       // Theme follows the chapter the active-marker is on (pivots at t=0.5 in transitions).
       const pivotChapter: ChapterId =
@@ -189,6 +208,7 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
       if (rafId != null) cancelAnimationFrame(rafId)
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
+      rmMedia.removeEventListener('change', onRmChange)
       ro.disconnect()
     }
   }, [])
@@ -197,9 +217,19 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
     <div className="story-shell" data-active-chapter={activeChapter}>
       <InkScene stateRef={scrollStateRef} />
 
-      <div className="story-ideogram" aria-hidden="true">
-        <span className="story-ideogram__glyph">{chapterMarks[activeChapter].glyph}</span>
-        <span className="story-ideogram__phrase">{chapterMarks[activeChapter].phrase}</span>
+      {/* Every mark stays mounted so the outgoing one can fade out while the incoming
+          one (if the chapter has one) fades in. */}
+      <div className="story-ideograms" aria-hidden="true">
+        {CHAPTER_IDS.map((id) => {
+          const mark = chapterMarks[id]
+          if (!mark) return null
+          return (
+            <div className={`story-ideogram${activeChapter === id ? ' is-active' : ''}`} key={id}>
+              <span className="story-ideogram__glyph">{mark.glyph}</span>
+              <span className="story-ideogram__phrase">{mark.phrase}</span>
+            </div>
+          )
+        })}
       </div>
 
       <aside className="story-rail" aria-hidden="true">

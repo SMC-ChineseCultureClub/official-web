@@ -22,6 +22,9 @@ export default function Nav() {
       .map((id) => document.getElementById(id))
       .filter((section): section is HTMLElement => Boolean(section))
 
+    // Focus-line pattern: the active section is whichever one straddles the line 45%
+    // down the viewport (matches StoryShell's FOCUS_FRAC). A visibility threshold
+    // would never fire for sections taller than ~2.2 viewports (e.g. the gallery).
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -30,16 +33,17 @@ export default function Nav() {
           links.forEach((link) => link.classList.toggle('is-active', link.getAttribute('href') === `#${id}`))
         })
       },
-      { threshold: 0.45 }
+      { rootMargin: '-45% 0px -54% 0px', threshold: 0 }
     )
 
     sections.forEach((section) => io.observe(section))
     return () => io.disconnect()
   }, [])
 
-  // Slow, custom anchor scrolling — long enough for the scroll-driven brush
-  // choreography to play through. Reduced motion falls back to the default
-  // (instant) jump rather than fighting the user's preference.
+  // Custom anchor scrolling: quick, with a brisk start and a long glide into the
+  // stop, so the scroll-driven brush still sweeps along without making the reader
+  // wait. Reduced motion falls back to the default (instant) jump rather than
+  // fighting the user's preference.
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
@@ -54,17 +58,23 @@ export default function Nav() {
       document.documentElement.style.scrollBehavior = ''
     }
 
+    // Accelerate over the first 30% of the time, then a long quintic glide into
+    // the stop. The two halves meet at the same speed, so there is no kink.
+    const P = 0.3
+    const IN = 3
+    const OUT = 5
+    const A = (OUT * P) / (IN * (1 - P) + OUT * P)
     const ease = (t: number) =>
-      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+      t < P ? A * (t / P) ** IN : 1 - (1 - A) * ((1 - t) / (1 - P)) ** OUT
 
     const scrollTo = (targetY: number) => {
       cancel()
       const startY = window.scrollY
       const distance = targetY - startY
       if (Math.abs(distance) < 1) return
-      // ~1.5ms per pixel travelled, clamped to a sensible window. A jump from
-      // Hero (top) to About is ~2 viewports, landing around 2.2–2.6s.
-      const duration = Math.min(4500, Math.max(1800, Math.abs(distance) * 1.5))
+      // ~0.3ms per pixel travelled, clamped: a jump of a couple of viewports
+      // takes about 0.7s, and even top-to-bottom stays under 1.4s.
+      const duration = Math.min(1400, Math.max(700, Math.abs(distance) * 0.3))
       const startTime = performance.now()
 
       document.documentElement.style.scrollBehavior = 'auto'
@@ -96,7 +106,7 @@ export default function Nav() {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
       const target = e.target as HTMLElement | null
       const anchor = target?.closest<HTMLAnchorElement>('a[href^="#"]')
-      if (!anchor || !anchor.closest('.nav')) return
+      if (!anchor || !anchor.closest('.nav, [data-smooth-scroll]')) return
       const href = anchor.getAttribute('href')
       if (!href || href === '#') return
       const id = href.slice(1)

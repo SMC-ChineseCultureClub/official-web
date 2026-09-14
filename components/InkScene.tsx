@@ -5,7 +5,9 @@ import { Environment, Sparkles, useGLTF } from '@react-three/drei'
 import { Suspense, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import * as THREE from 'three'
 import {
+  ANCHORED_RESTS,
   REST_POSES,
+  TRAIL_PROFILES,
   TRANSITIONS,
   sampleTrack,
   type ChapterId,
@@ -22,13 +24,17 @@ export type ScrollState = {
   localProgress: number
   narrativeProgress: number
   theme: 'tea' | 'ink'
+  /** Document-space vertical midpoint of the active rest chapter; null during transitions. */
+  restMidY: number | null
 }
 
 type InkSceneProps = {
   stateRef: RefObject<ScrollState>
 }
 
-const MOBILE_SCENE_QUERY = '(max-width: 720px), (hover: none) and (pointer: coarse)'
+// Must stay in sync with the CSS guards on .story-transition and .scene-layer in
+// globals.css: the brush experience is ≥1024px + fine pointer only.
+const MOBILE_SCENE_QUERY = '(max-width: 1023px), (hover: none) and (pointer: coarse)'
 
 // Tuned together with the camera fov so the brush at scale 1.0 reads about
 // the same on-screen size as before the fov widening.
@@ -39,12 +45,15 @@ const BASE_EULER = new THREE.Euler(0, 0, 0)
 
 function BrushModel({
   handleMaterialsRef,
+  centerYRef,
 }: {
   handleMaterialsRef: RefObject<Map<THREE.Material, THREE.Color>>
+  /** Receives the y of the model's bounding-box center, in model space at scale 1. */
+  centerYRef: RefObject<number>
 }) {
   const { scene } = useGLTF('/models/chinese-calligraphy-brush/source/Chinese Calligraphy Brush.glb')
 
-  const model = useMemo(() => {
+  const { model, centerY } = useMemo(() => {
     const clone = scene.clone(true)
     clone.traverse((child) => {
       if (!(child instanceof THREE.Mesh)) return
@@ -52,8 +61,14 @@ function BrushModel({
         ? child.material.map((m: THREE.Material) => m.clone())
         : (child.material as THREE.Material).clone()
     })
-    return clone
+    // Measured before the clone is parented to the rig, so the box stays in model space.
+    const centerY = new THREE.Box3().setFromObject(clone).getCenter(new THREE.Vector3()).y
+    return { model: clone, centerY }
   }, [scene])
+
+  useEffect(() => {
+    centerYRef.current = centerY
+  }, [centerY, centerYRef])
 
   useEffect(() => {
     model.updateMatrixWorld(true)
@@ -137,6 +152,9 @@ function makeInkTexture(): THREE.Texture {
 }
 
 const TRAIL_POOL_SIZE = 36
+// Minimum world-space distance the brush must travel between marks. Without
+// this a paused scroll keeps stamping the same spot into a solid dark blob.
+const TRAIL_MIN_STEP = 0.06
 
 type TrailMark = {
   position: THREE.Vector3
@@ -212,6 +230,7 @@ function SceneContents({ stateRef }: InkSceneProps) {
   const brushRigRef = useRef<THREE.Group>(null)
   const rimLightRef = useRef<THREE.PointLight>(null)
   const handleMaterialsRef = useRef<Map<THREE.Material, THREE.Color>>(new Map())
+  const brushCenterYRef = useRef(0)
 
   const currentPose = useRef<Pose>({ ...REST_POSES.hero, rotation: [...REST_POSES.hero.rotation] as [number, number, number] })
   const currentAccent = useRef(new THREE.Color(REST_POSES.hero.accent))
@@ -232,6 +251,7 @@ function SceneContents({ stateRef }: InkSceneProps) {
     })),
   )
   const lastEmitRef = useRef(0)
+  const lastEmitPos = useRef(new THREE.Vector2())
 
   useFrame((state, delta) => {
     const rig = brushRigRef.current
@@ -282,9 +302,21 @@ function SceneContents({ stateRef }: InkSceneProps) {
     const halfW = (viewport.width / 2) * scaleByDist
     const halfH = (viewport.height / 2) * scaleByDist
 
+    // Anchored rests: once the section's midpoint has scrolled above the brush's
+    // center, lift the brush by the gap so the two stay aligned. Applied after
+    // damping so it moves rigidly with the page, and read from window.scrollY
+    // here rather than through StoryShell's RAF to avoid trailing by a frame.
+    let lift = 0
+    if (seg.kind === 'rest' && ANCHORED_RESTS.has(seg.chapter) && scroll?.restMidY != null) {
+      const sectionMid = 1 - (2 * (scroll.restMidY - window.scrollY)) / window.innerHeight
+      const brushMid = currentPose.current.yFrac
+        + (brushCenterYRef.current * MODEL_BASE_SCALE * currentPose.current.scale) / halfH
+      lift = Math.max(0, sectionMid - brushMid)
+    }
+
     rig.position.set(
       currentPose.current.xFrac * halfW,
-      currentPose.current.yFrac * halfH,
+      (currentPose.current.yFrac + lift) * halfH,
       currentPose.current.z,
     )
 
@@ -300,19 +332,24 @@ function SceneContents({ stateRef }: InkSceneProps) {
 
     rig.scale.setScalar(MODEL_BASE_SCALE * currentPose.current.scale)
 
-    // ── Ink-wash trail emission (hero→about transition only) ──
-    // The trail is placed on the z=0 plane but aligned to the brush's screen
-    // position via xFrac/yFrac so the marks visually trail behind the brush as
-    // it sweeps right→left, regardless of how close the brush is to the camera.
-    const isHeroAbout = scroll?.segment.kind === 'transition' && scroll.segment.id === 'hero-to-about'
+    // ── Ink-wash trail emission ──
+    // Marks are placed on the z=0 plane but aligned to the brush's screen
+    // position via xFrac/yFrac so they visually trail behind the brush as it
+    // sweeps, regardless of how close the brush is to the camera. Every
+    // transition emits; TRAIL_PROFILES weights each one to suit its arc.
     const marks = trailMarksRef.current
     const now = state.clock.elapsedTime
-    if (isHeroAbout) {
+    const profile =
+      scroll?.segment.kind === 'transition' ? TRAIL_PROFILES[scroll.segment.id] : null
+    if (profile) {
       const lpNow = scroll!.localProgress
-      // Emit during the close approach and the painting sweep.
-      if (lpNow >= 0.38 && lpNow <= 0.98) {
-        const emitInterval = 0.045
-        if (now - lastEmitRef.current >= emitInterval) {
+      if (lpNow >= profile.window[0] && lpNow <= profile.window[1]) {
+        // Project the brush's xFrac/yFrac onto the z=0 plane so the trail
+        // lives on the "paper" rather than near the camera.
+        const baseX = currentPose.current.xFrac * (viewport.width / 2)
+        const baseY = currentPose.current.yFrac * (viewport.height / 2)
+        const moved = Math.hypot(baseX - lastEmitPos.current.x, baseY - lastEmitPos.current.y)
+        if (now - lastEmitRef.current >= profile.interval && moved >= TRAIL_MIN_STEP) {
           // Recycle the oldest slot (invisible slots preferred).
           let slot = -1
           let oldest = Infinity
@@ -323,28 +360,29 @@ function SceneContents({ stateRef }: InkSceneProps) {
           }
           if (slot >= 0) {
             const m = marks[slot]
-            // Project the brush's xFrac/yFrac onto the z=0 plane so the trail
-            // lives on the "paper" rather than near the camera.
-            const baseX = currentPose.current.xFrac * (viewport.width / 2)
-            const baseY = currentPose.current.yFrac * (viewport.height / 2)
+            // Marks thin out as the brush recedes behind the paper plane.
+            const depthFade = THREE.MathUtils.clamp((currentPose.current.z + 6) / 6, 0.2, 1)
             const isDroplet = Math.random() < 0.22
             const jx = (Math.random() - 0.5) * (isDroplet ? 1.4 : 0.55)
             const jy = (Math.random() - 0.5) * (isDroplet ? 1.0 : 0.40) - 0.10
             m.position.set(baseX + jx, baseY + jy, 0)
             m.birth = now
             m.life = isDroplet ? (0.9 + Math.random() * 0.7) : (1.6 + Math.random() * 1.2)
-            m.maxAlpha = isDroplet ? (0.42 + Math.random() * 0.22) : (0.28 + Math.random() * 0.22)
-            m.startScale = isDroplet ? (0.20 + Math.random() * 0.22) : (0.55 + Math.random() * 0.95)
+            m.maxAlpha = (isDroplet ? (0.42 + Math.random() * 0.22) : (0.28 + Math.random() * 0.22))
+              * profile.alpha * depthFade
+            m.startScale = (isDroplet ? (0.20 + Math.random() * 0.22) : (0.55 + Math.random() * 0.95))
+              * profile.scale * depthFade
             m.rotation = Math.random() * Math.PI * 2
             m.visible = true
             lastEmitRef.current = now
+            lastEmitPos.current.set(baseX, baseY)
           }
         }
       }
     }
-    // Outside the hero→about transition we simply stop emitting new marks —
-    // existing marks keep aging through InkTrail's useFrame so the trail
-    // tapers off smoothly instead of vanishing at the segment boundary.
+    // Outside an emitting window we simply stop adding new marks — existing
+    // marks keep aging through InkTrail's useFrame so the trail tapers off
+    // smoothly instead of vanishing at the segment boundary.
 
     const handles = handleMaterialsRef.current
     handles.forEach((orig, mat) => {
@@ -375,7 +413,7 @@ function SceneContents({ stateRef }: InkSceneProps) {
 
       <group ref={brushRigRef}>
         <Suspense fallback={null}>
-          <BrushModel handleMaterialsRef={handleMaterialsRef} />
+          <BrushModel handleMaterialsRef={handleMaterialsRef} centerYRef={brushCenterYRef} />
         </Suspense>
       </group>
 
@@ -407,7 +445,10 @@ export default function InkScene(props: InkSceneProps) {
     return () => media.removeEventListener('change', update)
   }, [])
 
-  if (isMobile) return null
+  // Reduced motion drops the scene entirely (StoryShell also collapses the transition
+  // spacers, so the page becomes a plain stacked flow) — a frozen brush hovering over
+  // the page is worse than no brush.
+  if (isMobile || reducedMotion) return null
 
   return (
     <div className="scene-layer" aria-hidden="true">
@@ -415,7 +456,6 @@ export default function InkScene(props: InkSceneProps) {
         camera={{ position: [0, 0, 8], fov: 46, near: 0.1, far: 60 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true }}
-        frameloop={reducedMotion ? 'demand' : 'always'}
       >
         <SceneContents {...props} />
       </Canvas>

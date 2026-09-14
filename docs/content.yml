@@ -1,0 +1,217 @@
+# ═══════════════════════════════════════════════════════════════════════
+#  CCC @ SMC — 网站内容填写表
+# ═══════════════════════════════════════════════════════════════════════
+#
+#  怎么用：
+#    1. 把下面每个 TODO 换成真实内容。
+#    2. 拿不准 / 还没确认的，**保持 TODO 不要动**——我不会去猜，
+#       会原样跳过那一项并在报告里列出来。
+#    3. 确定不要某一项（例如整块删掉），把值写成 REMOVE。
+#    4. 填完告诉我，我读这份文件写进代码。
+#
+#  几条注意：
+#    - 中文引号「」『』和标点都可以直接写，不用转义。
+#    - 值里含有 : # 等符号时，用双引号包起来，例如 "11:15 AM"
+#    - events / gallery / officers 三个列表**条数随意增删**，
+#      代码结构我来适配，不用管现在是几条。
+#    - 行首的 - 号表示一条记录，缩进请对齐。
+#
+# ═══════════════════════════════════════════════════════════════════════
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 1. 全站公用值
+#    ⚠️ 这几个值在代码里出现在多个地方（成立年份有 4 处），
+#    以前就是因为分散所以互相矛盾。这里填一次，我同步到所有位置。
+# ───────────────────────────────────────────────────────────────────────
+site:
+  # 社团成立年份。出现在：Hero 副标题、About 数据块、Nav 品牌行、Footer 版权
+  # 现在站内写的是 2025，但 Gallery 里有 2023 的活动，自相矛盾
+  founded_year: 2025          # 例: 2025
+
+  # Footer 版权年份（通常是今年）
+  copyright_year: 2026        # 例: 2026
+
+  # 当前 board 的届别，显示为「The 2026 board.」
+  board_year: 2026            # 例: 2026
+
+  # 固定会议地点。出现在：Hero 三格、About 数据块、Join 信息表
+  # 现在 About/Join 写 HSS 151，但 Events 里出现过 HSS 152
+  meeting_room: HSS 252          # 例: HSS 151
+  meeting_building: Humanities & Social Science      # 例: Humanities & Social Science
+  campus_address: 1900 Pico Boulevard, Santa Monica, CA        # 例: 1900 Pico Boulevard, Santa Monica, CA
+
+  # 固定会议时间。出现在：Hero 三格、About 数据块（短版）、Join 信息表（长版）
+  #
+  # ⚠️ 会议是【每两周一次】。原表单漏了这个字段，导致全站文案一直在暗示 weekly
+  #    （About 的标签原本写的就是「Weekly hour」）。
+  #    英文 biweekly 有歧义（也可指一周两次），全站统一用 every other。
+  meeting_frequency: every other week
+  meeting_time_short: "Thu 11:15AM"
+  meeting_time_long: "Every other Thursday · 11:15 AM — 12:30 PM"
+
+  # 联系方式
+  email: chineseculture.smc@gmail.com                 # 例: chineseculture.smc@gmail.com
+  instagram_handle: smc.ccc_      # 例: smc.ccc_   （不要带 @ 和网址）
+  smc_clubs_url: "https://www.smc.edu/community/office-of-student-life/student-government/clubs/chinese-culture-club.php"         # SMC 官网社团页，填前请点开确认还有效
+
+  # 网站域名（影响 SEO metadata 和 public/CNAME）
+  domain: TODO                # 例: ccc.peterguan.com
+
+  # ⚠️ 现在全站被 robots noindex 屏蔽，不会被搜索引擎收录。
+  # 准备好上线了就改成 true
+  allow_search_indexing: false
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 2. Hero（首屏）
+# ───────────────────────────────────────────────────────────────────────
+hero:
+  # 首屏大段介绍（原「the slow art of Chinese culture — tea poured carefully…」）。
+  # 2026-09-13 已从页面删除：放在那里不好看，右侧也是笔刷停靠的位置。
+  # 原位置改为 tagline 右侧的「Follow us on Instagram →」按钮（链接 instagram_handle）。
+  # 不再需要填写。
+  lede: REMOVE
+
+  # 中文小字副标题，现在是「a quieter way of belonging.」
+  tagline_en: TODO
+  # 这里我也希望你可以给我一些建议。
+
+  # 首屏底部三格。最早的 240+ 会员 / 14 场活动 / II 年是编的，
+  # 中间一版 10+ events a year / ALL backgrounds welcome 也已撤下。
+  # 现在三格全是会议信息（时间 / 地点 / 频率），直接取自上面的 site.meeting_*——
+  # 改会议时间或地点时，这里要一起改。
+  stats:
+    - value: "11:15 AM"
+      label: until 12:30 PM
+    - value: HSS 252
+      label: where we meet
+    - value: Thu
+      label: every other week
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 3. About（关于我们）
+# ───────────────────────────────────────────────────────────────────────
+about:
+  # 2026-09-13 已写入 components/About.tsx。定位：第一印象是交朋友的 social club，
+  # 文化学习留给 meeting。创始人真名不出现；也不提校内其它华人学生组织。
+  # 访客不读大段文字 → 只保留：一句 lead + 四格活动 + 一句 closing。
+  # 已删：竖排诗卡片（一盏茶，一段话…）和「会」印章、底部三格（与 Hero 重复）、长段落。
+  heading: "Good company, and a little culture."   # 原「An unhurried home for heritage.」
+
+  lead: "A place at SMC to make friends, with Chinese culture as the thread that ties it together."
+
+  activities:
+    - what: Calligraphy
+      note: 福 characters, spring couplets
+    - what: Crafts
+      note: Plaster figurines, cloisonné      # 掐丝珐琅，已确认
+    - what: Games
+      note: Trivia on festivals and traditions   # 原 Kahoot
+    - what: Potlucks
+      note: And holiday events with other clubs
+
+  closing: "No fluency, no prior knowledge, no Chinese surname required. Only curiosity, and a willingness to listen."
+
+  # 成立背景（真实信息，暂未上页面，留作以后「Our story」之类的位置备用）：
+  founding_story: >-
+    Three students started the club in 2025. SMC already had clubs celebrating Korean,
+    Japanese, Mexican, and Pacific Islander cultures, but nowhere to share Chinese culture —
+    so they built one, open to everyone. Most of our members grew up with it, in China,
+    Malaysia, Singapore, or Chinese American homes; the rest simply got curious, and after
+    a meeting or two nobody is keeping track.
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 4. Events（活动）
+#    2026-09-13 起真实数据在 lib/events.ts —— 以后改活动只改那一个文件。
+#    - 最近的一场自动成为大卡片，其余按日期进列表，日期未定（TBA）的排最后
+#    - 过期活动第二天自动从页面消失（按洛杉矶时间，访客浏览器端判断）
+#    - 例会合并成一行「General Meetings · every other Thursday」，
+#      具体日期由 from / until / skip 推算；skip 里的日期不开
+#    - photo / href 是可选字段：有照片大卡片显示图，有链接条目可点击
+# ───────────────────────────────────────────────────────────────────────
+events: SEE lib/events.ts
+  # 待确认：
+  #   - 学期最后一次例会暂定 12/10（until）
+  #   - 11/26 感恩节已按不开处理（skip）
+  #   - 10/1 暂定无例会（未列入）
+  #   - Potluck 日期、时间待定
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 5. Gallery（往期存档）
+#    2026-09-14：已换成 9 张真实活动图（components/Gallery.tsx 顶部 archive 数组），
+#    ⚠️ 但都是从 Instagram 截图裁的演示图，上线前要换原图（见 launch-plan §9）。
+#    年月是按 IG 发帖时间估的，需要核对：
+#      Lantern Festival — Apr '26（帖子 4/7 发的，活动本身可能更早）
+#      Club Row — May '26 · Calligraphy on Lacquer Fans / Lacquer Fans — Nov '25
+#      Plaster Lions — May '26 · Club Awareness — Mar '26 · Liuli Bracelets — May '26
+#      International Day — May '25 · Mid-Autumn Festival — Oct '25
+#    原图：长边 ≤1600px、WebP，放 public/gallery/，文件名沿用现在的即可直接替换。
+# ───────────────────────────────────────────────────────────────────────
+gallery: SEE components/Gallery.tsx
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 6. Officers（干部）
+#    2026-09-14 已写入 components/Officers.tsx（顶部 contacts / teams 两个数组）。
+#    名单取自 IG 干部介绍帖（Ryuhei AJ 帖子里写成 Publicity，实为 Publicist）。
+#    - 上层：President、Vice President、ICC Delegate 三张大照片卡片
+#    - 其余 12 人：不分组的小头像墙
+#    - 联系方式：Board 最下方只放社团邮箱 site.email（已确认有效），不公开个人邮箱
+#    ⚠️ 照片是从介绍帖裁的演示图，上线前换原图（见 launch-plan §9）
+# ───────────────────────────────────────────────────────────────────────
+officers: SEE components/Officers.tsx
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 7. Join（加入我们）
+# ───────────────────────────────────────────────────────────────────────
+join:
+  heading: TODO               # 现在是「Sit down for a while.」，想留就照抄
+  heading_cn: TODO            # 现在是「我们在等你」
+  body: TODO
+
+  # 确认是否真的免会费——现在文案写了 no dues
+  no_dues: TODO               # true 或 false
+
+  # 主按钮指向哪里
+  cta_target: TODO            # email 或 instagram
+
+  # 指导老师
+  # ⚠️⚠️ 上线前必须替换 —— 这是目前唯一一处「明知是假、且决定暂时留着」的内容。
+  #
+  #   现状：2026-09-12 起 Join 精简为「标题 + 一行时间地点 + IG」，
+  #         指导老师【已不在页面上显示】，占位名 Li Lei & Han Meimei 随之移除。
+  #         若 SMC 要求公示，拿到真实信息后再决定放哪（例如 Footer）。
+  #   负责人：需要向社团 advisor 本人 / Office of Student Life 索取
+  #          真实姓名与所属院系。
+  #   时点：2026-09-12 确认信息暂时拿不到，上线前补。
+  #
+  #   ⛔ 在这两项填好之前，不要把 allow_search_indexing 改成 true。
+  advisor_name: TODO
+  advisor_department: TODO    # 例: Department of Modern Languages
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 8. SEO / 分享卡片
+# ───────────────────────────────────────────────────────────────────────
+seo:
+  # 搜索结果和分享链接时显示的描述
+  # 现在提到 tea ceremonies / calligraphy / Lunar New Year，
+  # 确认这些是否真的是社团在做的事
+  description: TODO
+
+  # 分享到微信/IG/Slack 时的预览图，1200×630，放 public/ 下
+  # 现在没有，链接分享出去是一片空白
+  og_image: TODO
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 9. 结尾诗句
+#    苏轼《水调歌头》「但愿人长久，千里共婵娟」+ 英文对照。
+#    这是真实引用，不用改。想换的话在这里写新的，否则保持 KEEP。
+# ───────────────────────────────────────────────────────────────────────
+epigraph: KEEP
