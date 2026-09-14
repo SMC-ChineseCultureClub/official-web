@@ -298,7 +298,7 @@ NEXT GATHERING  ·  Mid-Autumn Mooncake Night  ·  Thu Sep 28, 7:30 PM  ·  The 
 
 ### 6.6 笔（3D brush）：收缩为「首尾书挡」
 
-**方向已定，实现留到最后统一做 UI 时执行。**
+> ❌ **已否决。** 所有 section 保留笔和现有的 `data-rest-side` 通道排版。以下内容仅作记录，不再执行。
 
 **问题：** 为了给笔留位置，内容被压到 64% 宽（`globals.css:428–490`），且 `≥1024px` 时多列布局被强制塌成单列——导致 **1440px 桌面版页面高 15191px，比 900px 窄屏版（7328px）还长一倍，布局反而更松散**。为了笔的 transition 加的 6 个 100vh spacer 又贡献了约 5400px 的空滚动。
 
@@ -479,7 +479,7 @@ Instagram 是社团唯一的共同平台，所以它在站内的权重应该高�
 
 ### 第一阶段 · 结构（纯删代码，不碰内容）
 
-1. **笔收缩**（见 §6.6）——Hero + Epigraph 保留，删掉中间 5 个 spacer 和全部 `data-rest-side` 通道 CSS
+1. ~~**笔收缩**（见 §6.6）——Hero + Epigraph 保留，删掉中间 5 个 spacer 和全部 `data-rest-side` 通道 CSS~~ **已否决**：所有 section 保留笔和通道排版
 2. **修固定元素碰撞**——`.story-rail` 与内容重叠（见 §6.2）。通道删除后内容位置会变，所以跟着这一步做。（左侧浮动大字 `.story-ideogram` 在 Events / Board 压住内容，2026-09-13 起这两章不再显示「礼」「会」；挪位、变淡都不理想）
 3. **对比度 token 调深**（见 §6.2）
 
