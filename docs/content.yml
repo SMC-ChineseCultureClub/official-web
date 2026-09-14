@@ -125,45 +125,19 @@ about:
 
 # ───────────────────────────────────────────────────────────────────────
 # 4. Events（活动）
-#    ⚠️ 这是全站风险最高的部分：现在有 5 条编造的未来活动，带具体日期。
-#    学生按假日期跑来是实际伤害，不是「内容不新」而已。
-#
-#    条数随意。只有 2 场确认的就只写 2 条，我会把布局改成自适应。
+#    2026-09-13 起真实数据在 lib/events.ts —— 以后改活动只改那一个文件。
+#    - 最近的一场自动成为大卡片，其余按日期进列表，日期未定（TBA）的排最后
+#    - 过期活动第二天自动从页面消失（按洛杉矶时间，访客浏览器端判断）
+#    - 例会合并成一行「General Meetings · every other Thursday」，
+#      具体日期由 from / until / skip 推算；skip 里的日期不开
+#    - photo / href 是可选字段：有照片大卡片显示图，有链接条目可点击
 # ───────────────────────────────────────────────────────────────────────
-events:
-  # 顶部那张大卡（主打活动）。不需要就整块写 feature: REMOVE
-  feature:
-    tag: TODO                 # 例: Headline event · February
-    title: TODO               # 例: Lunar New Year Gala & Banquet
-    title_cn: TODO            # 例: 农历新年 · 春节晚会
-    description: TODO
-    date: TODO                # 例: "Sat · 14 Feb"
-    time: TODO                # 例: "6 — 10 PM"
-    location: TODO            # 例: Cafeteria
-    location_note: TODO       # 例: SMC Campus
-    cost: TODO                # 例: "Free · RSVP"
-    cost_note: TODO           # 例: Members + guests
-    photo: TODO               # 照片文件名，放 public/ 下；没有就写 REMOVE
-    seal_cn: TODO             # 卡片角上的印章字，1 个汉字，例: 春
-
-  # 下方列表。每条一个 - 开头。增删随意。
-  list:
-    - day: TODO               # 例: 28
-      month: TODO             # 例: September
-      title: TODO             # 例: Mid-Autumn Mooncake Night
-      title_cn: TODO          # 例: 中秋赏月
-      where: TODO
-      when: TODO              # 例: "7:30 — 10:00 PM"
-
-    - day: TODO
-      month: TODO
-      title: TODO
-      title_cn: TODO
-      where: TODO
-      when: TODO
-
-  # 如果活动条数不够，是否在列表末尾加一条引导关注 Instagram 的入口
-  show_instagram_cta: TODO    # true 或 false
+events: SEE lib/events.ts
+  # 待确认：
+  #   - 学期最后一次例会暂定 12/10（until）
+  #   - 11/26 感恩节已按不开处理（skip）
+  #   - 10/1 暂定无例会（未列入）
+  #   - Potluck 日期、时间待定
 
 
 # ───────────────────────────────────────────────────────────────────────
