@@ -13,6 +13,7 @@ import {
   type ChapterId,
   type Pose,
   type TransitionId,
+  SCENE_HIDDEN_QUERY,
 } from '@/lib/brushChoreography'
 
 export type SegmentRef =
@@ -32,9 +33,6 @@ type InkSceneProps = {
   stateRef: RefObject<ScrollState>
 }
 
-// Must stay in sync with the CSS guards on .story-transition and .scene-layer in
-// globals.css: the brush experience is ≥1024px + fine pointer only.
-const MOBILE_SCENE_QUERY = '(max-width: 1023px), (hover: none) and (pointer: coarse)'
 
 // Tuned together with the camera fov so the brush at scale 1.0 reads about
 // the same on-screen size as before the fov widening.
@@ -438,7 +436,7 @@ export default function InkScene(props: InkSceneProps) {
   }, [])
 
   useEffect(() => {
-    const media = window.matchMedia(MOBILE_SCENE_QUERY)
+    const media = window.matchMedia(SCENE_HIDDEN_QUERY)
     const update = () => setIsMobile(media.matches)
     update()
     media.addEventListener('change', update)
