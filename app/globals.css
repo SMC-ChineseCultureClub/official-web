@@ -4,7 +4,7 @@
   --paper-edge:   #ddd0b2;
   --ink:          #1a1612;
   --ink-soft:     #3a3127;
-  --ink-mute:     #7a6e5a;
+  --ink-mute:     #6b604e;   /* 5.0:1 on paper — #7a6e5a missed WCAG AA (4.06) */
   --ink-faint:    #a89d83;
   --seal:         #7B2121;
   --seal-deep:    #5a1818;

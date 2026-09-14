@@ -130,7 +130,7 @@ export default function Nav() {
 
   return (
     <header className="nav" id="nav">
-      <a href="#top" className="nav__brand" aria-label="Chinese Culture Club at Santa Monica College">
+      <a href="#top" className="nav__brand">
         <span className="seal" aria-hidden="true">
           中
         </span>
