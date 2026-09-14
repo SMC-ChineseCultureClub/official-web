@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import InkScene, { type ScrollState } from '@/components/InkScene'
+import BrushScene from '@/components/BrushScene'
+import type { ScrollState } from '@/components/InkScene'
 import {
   CHAPTER_IDS,
   type ChapterId,
@@ -215,7 +216,7 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="story-shell" data-active-chapter={activeChapter}>
-      <InkScene stateRef={scrollStateRef} />
+      <BrushScene stateRef={scrollStateRef} />
 
       {/* Every mark stays mounted so the outgoing one can fade out while the incoming
           one (if the chapter has one) fades in. */}

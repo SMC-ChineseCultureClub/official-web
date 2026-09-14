@@ -35,7 +35,7 @@ export default function Hero() {
           <div className="reveal d-4">
             <p className="hero__cn">
               中 国 文 化 社{' '}
-              <span className="small">— a quieter way of belonging.</span>
+              <span className="small">— culture, shared among friends.</span>
             </p>
           </div>
           <div className="reveal d-5">

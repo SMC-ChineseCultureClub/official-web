@@ -100,7 +100,7 @@ export const generalMeetings: Recurring = {
   em: 'General',
   from: '2026-10-15',
   everyWeeks: 2,
-  until: '2026-12-10', // tentative end of semester
+  until: '2026-12-10', // last meeting of the semester
   skip: [
     '2026-10-29', // Club Row instead
     '2026-11-26', // Thanksgiving

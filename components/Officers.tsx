@@ -1,30 +1,33 @@
 import Image from 'next/image'
 
 const CLUB_EMAIL = 'chineseculture.smc@gmail.com'
+// Each person links to their own introduction post (`post` = the id in
+// instagram.com/p/<id>/).
+const postUrl = (id: string) => `https://www.instagram.com/p/${id}/`
 
 // DEMO PHOTOS — cropped from the board introduction post on Instagram; replace
 // with originals before launch (docs/launch-plan.md). The contacts are shown
 // larger because they're who people reach out to; everyone shares the club
 // inbox rather than listing personal addresses.
 const contacts = [
-  { name: 'Diana Tian', role: 'President', photo: '/board/diana-tian.webp' },
-  { name: 'Grace Tian', role: 'Vice President', photo: '/board/grace-tian.webp' },
-  { name: 'Tygo', role: 'ICC Delegate', photo: '/board/tygo.webp' },
+  { name: 'Diana Tian', post: 'Dc_gnrTCf4T', role: 'President', photo: '/board/diana-tian.webp' },
+  { name: 'Grace Tian', post: 'Dc_hHU6ilj2', role: 'Vice President', photo: '/board/grace-tian.webp' },
+  { name: 'Tygo', post: 'Dc_jhIAC9So', role: 'ICC Delegate', photo: '/board/tygo.webp' },
 ]
 
 const members = [
-  { name: 'Elenor Joy', role: 'Treasurer', photo: '/board/elenor-joy.webp' },
-  { name: 'Nicole Arevalo', role: 'Secretary', photo: '/board/nicole-arevalo.webp' },
-  { name: 'Peter Guan', role: 'Website Coordinator', photo: '/board/peter-guan.webp' },
-  { name: 'Joanna Shen', role: 'Event Head', photo: '/board/joanna-shen.webp' },
-  { name: 'Judy King', role: 'Event Organizer', photo: '/board/judy-king.webp' },
-  { name: 'Francesca', role: 'Event Organizer', photo: '/board/francesca.webp' },
-  { name: 'Celina Xiong', role: 'Event Organizer', photo: '/board/celina-xiong.webp' },
-  { name: 'Tiffany', role: 'Event Organizer', photo: '/board/tiffany.webp' },
-  { name: 'Xinke Zong', role: 'Marketing Head', photo: '/board/xinke-zong.webp' },
-  { name: 'Yurika Zhang', role: 'Publicist', photo: '/board/yurika-zhang.webp' },
-  { name: 'Hillary Wei', role: 'Publicist', photo: '/board/hillary-wei.webp' },
-  { name: 'Ryuhei AJ', role: 'Publicist', photo: '/board/ryuhei-aj.webp' },
+  { name: 'Elenor Joy', post: 'Dc_jSuFiFS_', role: 'Treasurer', photo: '/board/elenor-joy.webp' },
+  { name: 'Nicole Arevalo', post: 'Dc_jvqJiTXj', role: 'Secretary', photo: '/board/nicole-arevalo.webp' },
+  { name: 'Peter Guan', post: 'Dc_lN5EKFVg', role: 'Website Coordinator', photo: '/board/peter-guan.webp' },
+  { name: 'Joanna Shen', post: 'Dc_j5PdKOxp', role: 'Event Head', photo: '/board/joanna-shen.webp' },
+  { name: 'Judy King', post: 'Dc_kCVyi96t', role: 'Event Organizer', photo: '/board/judy-king.webp' },
+  { name: 'Francesca', post: 'Dc_kI8Kqi1C', role: 'Event Organizer', photo: '/board/francesca.webp' },
+  { name: 'Celina Xiong', post: 'Dc_ka04iFy5', role: 'Event Organizer', photo: '/board/celina-xiong.webp' },
+  { name: 'Tiffany', post: 'Dc_kS1hC88h', role: 'Event Organizer', photo: '/board/tiffany.webp' },
+  { name: 'Xinke Zong', post: 'Dc_kiAZKEvu', role: 'Marketing Head', photo: '/board/xinke-zong.webp' },
+  { name: 'Yurika Zhang', post: 'Dc_kq6YKuE1', role: 'Publicist', photo: '/board/yurika-zhang.webp' },
+  { name: 'Hillary Wei', post: 'Dc_kwbsiK9X', role: 'Publicist', photo: '/board/hillary-wei.webp' },
+  { name: 'Ryuhei AJ', post: 'Dc_lIUfwE_l', role: 'Publicist', photo: '/board/ryuhei-aj.webp' },
 ]
 
 export default function Officers() {
@@ -44,13 +47,16 @@ export default function Officers() {
           <div className="officers">
             {contacts.map((p) => (
               <article className="officer" key={p.name}>
-                <div className="officer__photo">
-                  <Image src={p.photo} alt={p.name} fill unoptimized sizes="(max-width: 520px) 30vw, 22vw" />
-                </div>
-                <div className="officer__body">
-                  <p className="officer__role">{p.role}</p>
-                  <h3 className="officer__name">{p.name}</h3>
-                </div>
+                <a className="officer__link" href={postUrl(p.post)} target="_blank" rel="noopener noreferrer">
+                  <div className="officer__photo">
+                    <Image src={p.photo} alt="" fill unoptimized sizes="(max-width: 520px) 30vw, 22vw" />
+                  </div>
+                  <div className="officer__body">
+                    <p className="officer__role">{p.role}</p>
+                    <h3 className="officer__name">{p.name}</h3>
+                    <span className="sr-only">, on Instagram (opens in a new tab)</span>
+                  </div>
+                </a>
               </article>
             ))}
           </div>
@@ -58,16 +64,20 @@ export default function Officers() {
           <ul className="members">
             {members.map((m) => (
               <li className="member" key={m.name}>
-                <div className="member__photo">
-                  <Image src={m.photo} alt="" fill unoptimized sizes="120px" />
-                </div>
-                <p className="member__name">{m.name}</p>
-                <p className="member__role">{m.role}</p>
+                <a className="member__link" href={postUrl(m.post)} target="_blank" rel="noopener noreferrer">
+                  <div className="member__photo">
+                    <Image src={m.photo} alt="" fill unoptimized sizes="120px" />
+                  </div>
+                  <p className="member__name">{m.name}</p>
+                  <p className="member__role">{m.role}</p>
+                  <span className="sr-only">, on Instagram (opens in a new tab)</span>
+                </a>
               </li>
             ))}
           </ul>
 
           <p className="board__contact">
+            <span className="board__hint">Tap anyone to meet them on Instagram.</span>
             Write to any of us at{' '}
             <a href={`mailto:${CLUB_EMAIL}`}>{CLUB_EMAIL}</a>
           </p>

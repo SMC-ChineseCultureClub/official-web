@@ -7,6 +7,11 @@
 // TRANSITIONS — keyframed arcs that the brush traces between two adjacent chapters.
 //   Each track has 4–6 keyframes at normalized time t∈[0,1].
 
+// Where the brush is not shown. Must stay in sync with the CSS guards on
+// .story-transition and .scene-layer in globals.css: the brush experience is
+// ≥1024px + fine pointer only. BrushScene also uses it to skip loading three.js.
+export const SCENE_HIDDEN_QUERY = '(max-width: 1023px), (hover: none) and (pointer: coarse)'
+
 export const CHAPTER_IDS = [
   'hero',
   'about',
