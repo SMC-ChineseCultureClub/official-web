@@ -1,3 +1,6 @@
+import NextEventCta from '@/components/NextEventCta'
+import { pacificToday } from '@/lib/events'
+
 export default function Hero() {
   return (
     <section className="hero" id="top" data-story-chapter="hero" data-rest-side="right" data-screen-label="01 Hero">
@@ -36,14 +39,7 @@ export default function Hero() {
             </p>
           </div>
           <div className="reveal d-5">
-            <a
-              className="hero__cta"
-              href="https://www.instagram.com/smc.ccc_/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Follow us on Instagram <span aria-hidden="true">→</span>
-            </a>
+            <NextEventCta buildDate={pacificToday()} />
           </div>
         </div>
 

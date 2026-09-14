@@ -99,7 +99,7 @@ export default function Nav() {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
       const target = e.target as HTMLElement | null
       const anchor = target?.closest<HTMLAnchorElement>('a[href^="#"]')
-      if (!anchor || !anchor.closest('.nav')) return
+      if (!anchor || !anchor.closest('.nav, [data-smooth-scroll]')) return
       const href = anchor.getAttribute('href')
       if (!href || href === '#') return
       const id = href.slice(1)

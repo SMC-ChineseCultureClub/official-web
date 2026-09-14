@@ -526,6 +526,19 @@ a { color: inherit; }
   border: 1px solid var(--ink); border-radius: 999px;
   transition: background 240ms ease, color 240ms ease;
 }
+.hero__cta-kicker {
+  font-family: var(--serif-body); font-style: normal;
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--seal); margin-right: 12px; vertical-align: 0.15em;
+  transition: color 240ms ease;
+}
+/* Phones: the kicker would push the arrow onto a second line inside the pill. */
+@media (max-width: 480px) {
+  .hero__cta { white-space: nowrap; }
+  .hero__cta-kicker { display: none; }
+}
+.hero__cta:hover .hero__cta-kicker,
+.hero__cta:focus-visible .hero__cta-kicker { color: var(--paper); }
 /* .reveal clips overflow, which would cut off a focus outline — fill instead. */
 .hero__cta:hover,
 .hero__cta:focus-visible { background: var(--ink); color: var(--paper); outline: none; }
