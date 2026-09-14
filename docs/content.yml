@@ -67,9 +67,11 @@ site:
 # 2. Hero（首屏）
 # ───────────────────────────────────────────────────────────────────────
 hero:
-  # 首屏大段介绍。现在这段是编的，需要一句能代表社团真实调性的话
-  lede: TODO
-  # 这里我希望你能帮助我编写一下。我们在SMC社团官网上的介绍是“The purpose of the Chinese Culture Club is to promote and celebrate Chinese culture, language, traditions, and heritage while fostering cultural awareness, diversity, and community among students through educational and social activities”。用一句话总结就是宣传中国文化 + social club。
+  # 首屏大段介绍（原「the slow art of Chinese culture — tea poured carefully…」）。
+  # 2026-09-13 已从页面删除：放在那里不好看，右侧也是笔刷停靠的位置。
+  # 原位置改为 tagline 右侧的「Follow us on Instagram →」按钮（链接 instagram_handle）。
+  # 不再需要填写。
+  lede: REMOVE
 
   # 中文小字副标题，现在是「a quieter way of belonging.」
   tagline_en: TODO

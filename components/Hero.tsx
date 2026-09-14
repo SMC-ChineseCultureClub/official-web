@@ -36,11 +36,14 @@ export default function Hero() {
             </p>
           </div>
           <div className="reveal d-5">
-            <p className="hero__lede">
-              We are a student society at Santa Monica College devoted to{' '}
-              <em>the slow art</em> of Chinese culture &mdash; tea poured carefully,
-              ink set against paper, and friendships that last beyond the semester.
-            </p>
+            <a
+              className="hero__cta"
+              href="https://www.instagram.com/smc.ccc_/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Follow us on Instagram <span aria-hidden="true">→</span>
+            </a>
           </div>
         </div>
 
