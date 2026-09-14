@@ -1,3 +1,32 @@
+import Image from 'next/image'
+
+const CLUB_EMAIL = 'chineseculture.smc@gmail.com'
+
+// DEMO PHOTOS — cropped from the board introduction post on Instagram; replace
+// with originals before launch (docs/launch-plan.md). The contacts are shown
+// larger because they're who people reach out to; everyone shares the club
+// inbox rather than listing personal addresses.
+const contacts = [
+  { name: 'Diana Tian', role: 'President', photo: '/board/diana-tian.webp' },
+  { name: 'Grace Tian', role: 'Vice President', photo: '/board/grace-tian.webp' },
+  { name: 'Tygo', role: 'ICC Delegate', photo: '/board/tygo.webp' },
+]
+
+const members = [
+  { name: 'Elenor Joy', role: 'Treasurer', photo: '/board/elenor-joy.webp' },
+  { name: 'Nicole Arevalo', role: 'Secretary', photo: '/board/nicole-arevalo.webp' },
+  { name: 'Peter Guan', role: 'Website Coordinator', photo: '/board/peter-guan.webp' },
+  { name: 'Joanna Shen', role: 'Event Head', photo: '/board/joanna-shen.webp' },
+  { name: 'Judy King', role: 'Event Organizer', photo: '/board/judy-king.webp' },
+  { name: 'Francesca', role: 'Event Organizer', photo: '/board/francesca.webp' },
+  { name: 'Celina Xiong', role: 'Event Organizer', photo: '/board/celina-xiong.webp' },
+  { name: 'Tiffany', role: 'Event Organizer', photo: '/board/tiffany.webp' },
+  { name: 'Xinke Zong', role: 'Marketing Head', photo: '/board/xinke-zong.webp' },
+  { name: 'Yurika Zhang', role: 'Publicist', photo: '/board/yurika-zhang.webp' },
+  { name: 'Hillary Wei', role: 'Publicist', photo: '/board/hillary-wei.webp' },
+  { name: 'Ryuhei AJ', role: 'Publicist', photo: '/board/ryuhei-aj.webp' },
+]
+
 export default function Officers() {
   return (
     <section id="officers" data-story-chapter="officers" data-rest-side="right" data-screen-label="05 Officers">
@@ -11,102 +40,37 @@ export default function Officers() {
           </h2>
         </header>
 
-        <div className="officers in">
-          <article className="officer">
-            <div className="officer__photo">
-              <span className="stripes"></span>
-              <span className="ph-tag">portrait</span>
-              <span className="corner-cn">会长</span>
-            </div>
-            <div className="officer__body">
-              <div>
-                <p className="officer__role">President</p>
-                <h3 className="officer__name">Lei Li</h3>
-                <p className="officer__pron">Third-year, Comparative Literature.</p>
-              </div>
-              <div className="officer__cn">李雷</div>
-            </div>
-          </article>
+        <div className="board in">
+          <div className="officers">
+            {contacts.map((p) => (
+              <article className="officer" key={p.name}>
+                <div className="officer__photo">
+                  <Image src={p.photo} alt={p.name} fill unoptimized sizes="(max-width: 520px) 30vw, 22vw" />
+                </div>
+                <div className="officer__body">
+                  <p className="officer__role">{p.role}</p>
+                  <h3 className="officer__name">{p.name}</h3>
+                </div>
+              </article>
+            ))}
+          </div>
 
-          <article className="officer">
-            <div className="officer__photo">
-              <span className="stripes"></span>
-              <span className="ph-tag">portrait</span>
-              <span className="corner-cn">副会长</span>
-            </div>
-            <div className="officer__body">
-              <div>
-                <p className="officer__role">Vice President</p>
-                <h3 className="officer__name">Meimei Han</h3>
-                <p className="officer__pron">Second-year, Economics &amp; History.</p>
-              </div>
-              <div className="officer__cn">韩梅梅</div>
-            </div>
-          </article>
+          <ul className="members">
+            {members.map((m) => (
+              <li className="member" key={m.name}>
+                <div className="member__photo">
+                  <Image src={m.photo} alt="" fill unoptimized sizes="120px" />
+                </div>
+                <p className="member__name">{m.name}</p>
+                <p className="member__role">{m.role}</p>
+              </li>
+            ))}
+          </ul>
 
-          <article className="officer">
-            <div className="officer__photo">
-              <span className="stripes"></span>
-              <span className="ph-tag">portrait</span>
-              <span className="corner-cn">秘书</span>
-            </div>
-            <div className="officer__body">
-              <div>
-                <p className="officer__role">Secretary</p>
-                <h3 className="officer__name">San Zhang</h3>
-                <p className="officer__pron">Third-year, Graphic Design.</p>
-              </div>
-              <div className="officer__cn">张三</div>
-            </div>
-          </article>
-
-          <article className="officer">
-            <div className="officer__photo">
-              <span className="stripes"></span>
-              <span className="ph-tag">portrait</span>
-              <span className="corner-cn">财务</span>
-            </div>
-            <div className="officer__body">
-              <div>
-                <p className="officer__role">Treasurer</p>
-                <h3 className="officer__name">Si Li</h3>
-                <p className="officer__pron">Second-year, Accounting.</p>
-              </div>
-              <div className="officer__cn">李四</div>
-            </div>
-          </article>
-
-          <article className="officer">
-            <div className="officer__photo">
-              <span className="stripes"></span>
-              <span className="ph-tag">portrait</span>
-              <span className="corner-cn">活动</span>
-            </div>
-            <div className="officer__body">
-              <div>
-                <p className="officer__role">Events Chair</p>
-                <h3 className="officer__name">Wu Wang</h3>
-                <p className="officer__pron">Third-year, Hospitality.</p>
-              </div>
-              <div className="officer__cn">王五</div>
-            </div>
-          </article>
-
-          <article className="officer">
-            <div className="officer__photo">
-              <span className="stripes"></span>
-              <span className="ph-tag">portrait</span>
-              <span className="corner-cn">文化</span>
-            </div>
-            <div className="officer__body">
-              <div>
-                <p className="officer__role">Cultural Chair</p>
-                <h3 className="officer__name">Liu Zhao</h3>
-                <p className="officer__pron">Fourth-year, East Asian Studies.</p>
-              </div>
-              <div className="officer__cn">赵六</div>
-            </div>
-          </article>
+          <p className="board__contact">
+            Write to any of us at{' '}
+            <a href={`mailto:${CLUB_EMAIL}`}>{CLUB_EMAIL}</a>
+          </p>
         </div>
       </div>
       </div>

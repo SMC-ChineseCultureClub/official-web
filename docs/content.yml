@@ -156,37 +156,14 @@ gallery: SEE components/Gallery.tsx
 
 # ───────────────────────────────────────────────────────────────────────
 # 6. Officers（干部）
-#    ⚠️ 现在 6 个人全是占位名：李雷/韩梅梅 是英语教科书人物，
-#    张三/李四/王五/赵六 相当于 John Doe。
-#
-#    你提过实际有 15 人。条数随便写，但注意：
-#    15 个人全放等大的卡片会失去层级，访客不知道该找谁。
-#    建议 exec 填 4–6 人（带照片），其余的人填在下面 committee 里（纯文字）。
-#
-#    ⚠️ 中文名、专业年级、照片都属于个人信息，逐个确认本人是否愿意公开。
-#    不愿意露脸的：photo 写 NONE，会用汉字印章块占位，不会显示成空洞。
+#    2026-09-14 已写入 components/Officers.tsx（顶部 contacts / teams 两个数组）。
+#    名单取自 IG 干部介绍帖（Ryuhei AJ 帖子里写成 Publicity，实为 Publicist）。
+#    - 上层：President、Vice President、ICC Delegate 三张大照片卡片
+#    - 其余 12 人：不分组的小头像墙
+#    - 联系方式：Board 最下方只放社团邮箱 site.email（已确认有效），不公开个人邮箱
+#    ⚠️ 照片是从介绍帖裁的演示图，上线前换原图（见 launch-plan §9）
 # ───────────────────────────────────────────────────────────────────────
-officers:
-  exec:
-    - role: TODO              # 例: President
-      role_cn: TODO           # 例: 会长
-      name: TODO              # 英文名
-      name_cn: TODO           # 中文名，不公开就写 NONE
-      detail: TODO            # 例: Third-year, Comparative Literature. 不公开写 NONE
-      photo: TODO             # 文件名；不愿露脸写 NONE
-
-    - role: TODO
-      role_cn: TODO
-      name: TODO
-      name_cn: TODO
-      detail: TODO
-      photo: TODO
-
-  # 其余干部，纯文字列表，不需要照片
-  committee:
-    - role: TODO              # 例: Publicity Officer
-      name: TODO
-      name_cn: TODO           # 不公开写 NONE
+officers: SEE components/Officers.tsx
 
 
 # ───────────────────────────────────────────────────────────────────────

@@ -317,12 +317,6 @@ a { color: inherit; }
     gap: clamp(12px, 1.6vw, 24px);
   }
 
-  /* Officers: 2-col instead of 3-col when squeezed into the lane. */
-  [data-rest-side="right"] .officers {
-    grid-template-columns: repeat(2, 1fr);
-    gap: clamp(28px, 4vw, 48px) clamp(24px, 3vw, 40px);
-  }
-
   /* Join: stack copy and where dl vertically; copy on top reads first. */
   [data-rest-side="left"] .join__inner {
     grid-template-columns: 1fr;
@@ -818,20 +812,6 @@ a.event:hover .event__cta { transform: translateX(6px); }
   border: 1px solid var(--ink-faint); min-width: 0;
 }
 
-.stripes {
-  position: absolute; inset: 0;
-  background-image: repeating-linear-gradient(135deg, transparent 0 18px, rgba(26,22,18,0.045) 18px 19px);
-}
-
-.placeholder-label {
-  position: absolute; left: 18px; top: 18px;
-  font-family: var(--serif-body);
-  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--ink-mute);
-  background: var(--paper); padding: 6px 10px;
-  border: 1px solid var(--ink-faint);
-}
-
 .events-feature__img img {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover;
@@ -994,13 +974,11 @@ a.event:hover .event__cta { transform: translateX(6px); }
 }
 
 /* ───── OFFICERS ───── */
+/* Three contacts, larger, then everyone else as a headshot wall. */
 .officers {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: clamp(28px, 4vw, 64px) clamp(20px, 3vw, 48px);
+  gap: clamp(20px, 2.4vw, 36px);
 }
-
-@media (max-width: 880px) { .officers { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 520px) { .officers { grid-template-columns: 1fr; } }
 
 .officer { display: flex; flex-direction: column; }
 
@@ -1010,52 +988,74 @@ a.event:hover .event__cta { transform: translateX(6px); }
   border: 1px solid var(--ink-faint); overflow: hidden;
 }
 
-.officer__photo .stripes {
-  background-image: repeating-linear-gradient(135deg, transparent 0 14px, rgba(26,22,18,0.05) 14px 15px);
-}
-
-.officer__photo .corner-cn {
-  position: absolute; right: 16px; bottom: 12px;
-  font-family: var(--serif-cn); font-size: 56px; line-height: 1;
-  color: var(--ink); opacity: 0.18;
-}
-
-.officer__photo .ph-tag {
-  position: absolute; left: 14px; top: 14px;
-  font-family: var(--serif-body);
-  font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--ink-mute); background: var(--paper);
-  padding: 5px 8px; border: 1px solid var(--ink-faint);
-}
+.officer__photo img,
+.member__photo img { object-fit: cover; }
 
 .officer__body {
-  padding-top: 22px; border-top: 1px solid var(--ink-faint); margin-top: 22px;
-  display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: start;
+  padding-top: 14px; border-top: 1px solid var(--ink-faint); margin-top: 16px;
 }
 
 .officer__role {
   font-family: var(--serif-body);
   font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
-  color: var(--ink-mute); margin-bottom: 8px;
+  color: var(--ink-soft); margin: 0 0 6px;
 }
 
 .officer__name {
   font-family: var(--serif-display); font-weight: 400;
-  font-size: 26px; line-height: 1.1; margin: 0; color: var(--ink);
+  font-size: clamp(22px, 1.9vw, 26px); line-height: 1.1; margin: 0; color: var(--ink);
 }
 
-.officer__name .it { font-style: italic; color: var(--ink-soft); }
-
-.officer__cn {
-  font-family: var(--serif-cn); font-size: 22px;
-  color: var(--seal); letter-spacing: 0.06em; line-height: 1;
-  padding-top: 18px;
-}
-
-.officer__pron {
-  margin-top: 10px;
+.board__contact {
+  margin: clamp(32px, 5vh, 48px) 0 0;
+  padding-top: clamp(20px, 3vh, 28px); border-top: 1px solid var(--ink-faint);
   font-family: var(--serif-display); font-style: italic;
-  font-size: 15px; color: var(--ink-soft);
+  font-size: clamp(18px, 1.5vw, 21px); color: var(--ink-soft);
+}
+
+.board__contact a {
+  color: var(--ink); text-decoration: underline;
+  text-decoration-color: var(--ink-faint); text-underline-offset: 4px;
+}
+
+.board__contact a:hover { text-decoration-color: var(--ink); }
+
+.members {
+  list-style: none; margin: clamp(40px, 6vh, 64px) 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 24px 16px;
+}
+
+.member__photo {
+  position: relative; aspect-ratio: 1;
+  background: var(--paper-deep);
+  border: 1px solid var(--ink-faint); overflow: hidden;
+}
+
+.member__name {
+  margin: 10px 0 2px;
+  font-family: var(--serif-display); font-size: 17px; line-height: 1.15; color: var(--ink);
+}
+
+.member__role {
+  margin: 0;
+  font-family: var(--serif-body);
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 720px) {
+  .members { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Phones: contacts become compact rows (photo beside the text); the wall goes
+   three across. */
+@media (max-width: 520px) {
+  .officers { grid-template-columns: 1fr; gap: 16px; }
+  .officer { display: grid; grid-template-columns: 96px 1fr; gap: 16px; align-items: center; }
+  .officer__body { margin-top: 0; padding-top: 0; border-top: 0; }
+  .members { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 12px; }
+  .member__name { font-size: 15px; }
 }
 
 /* ───── JOIN ───── */

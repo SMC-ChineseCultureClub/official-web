@@ -232,7 +232,9 @@
 
 ---
 
-### 6.4 Officers：15 人怎么排（待验证）
+### 6.4 Officers：15 人怎么排
+
+> ✅ **2026-09-14 已定并实现**：上层 President / Vice President / ICC Delegate 三张大照片卡片；其余 12 人不分组，做一整面小头像墙；最下方统一写社团邮箱，不公开个人邮箱。不单独建 Board 页面。以下为当时的分析，留作记录。
 
 真实 board 有 **15 人**，当前设计只放了 6 张卡。直接扩到 15 会有问题：
 
@@ -455,6 +457,7 @@ Instagram 是社团唯一的共同平台，所以它在站内的权重应该高�
 - [ ] 移动端 + 桌面端 + reduced-motion 三条路径都走查过
 - [ ] Lighthouse：performance / accessibility / SEO 都跑一遍
 - [ ] 照片已压缩，officer 照片已获授权
+- [ ] **Board 的 15 张照片换成原图** ⚠️ 现在 `public/board/*.webp` 是 2026-09-14 从 IG 干部介绍帖裁的演示图，分辨率低（上层三位尤其明显）。原图同名替换即可
 - [ ] **Gallery 的 9 张图换成原图** ⚠️ 现在 `public/gallery/*.webp` 是 2026-09-14 为 board meeting 演示从 Instagram 截图裁出来的（画质有限、日期按发帖时间估的）。换成原图，并核对每张的活动名和年月（`components/Gallery.tsx` 顶部的 `archive` 数组）
 - [ ] OG 图存在（用 Instagram DM 给自己发一次链接，看预览卡片）
 - [ ] `npm run build` 通过
