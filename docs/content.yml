@@ -142,23 +142,16 @@ events: SEE lib/events.ts
 
 # ───────────────────────────────────────────────────────────────────────
 # 5. Gallery（往期存档）
-#    现在 9 格全是占位，日期跨 2023–2025，和「2025 成立」冲突。
-#    有几张真照片就写几条，不要留占位格。
-#
-#    照片：放 public/ 下，压缩成 WebP，宽度别超过 1600px
-#    （静态导出模式没有自动图片优化）。
-#    ⚠️ 合影里如果有非 board 成员，注意肖像权。
+#    2026-09-14：已换成 9 张真实活动图（components/Gallery.tsx 顶部 archive 数组），
+#    ⚠️ 但都是从 Instagram 截图裁的演示图，上线前要换原图（见 launch-plan §9）。
+#    年月是按 IG 发帖时间估的，需要核对：
+#      Lantern Festival — Apr '26（帖子 4/7 发的，活动本身可能更早）
+#      Club Row — May '26 · Calligraphy on Lacquer Fans / Lacquer Fans — Nov '25
+#      Plaster Lions — May '26 · Club Awareness — Mar '26 · Liuli Bracelets — May '26
+#      International Day — May '25 · Mid-Autumn Festival — Oct '25
+#    原图：长边 ≤1600px、WebP，放 public/gallery/，文件名沿用现在的即可直接替换。
 # ───────────────────────────────────────────────────────────────────────
-gallery:
-  - photo: TODO               # 例: gallery/lunar-new-year-2025.webp
-    title: TODO               # 例: Lunar New Year
-    date: TODO                # 例: Feb '25
-    corner_cn: TODO           # 角上的单字，例: 饺
-
-  - photo: TODO
-    title: TODO
-    date: TODO
-    corner_cn: TODO
+gallery: SEE components/Gallery.tsx
 
 
 # ───────────────────────────────────────────────────────────────────────

@@ -455,6 +455,7 @@ Instagram 是社团唯一的共同平台，所以它在站内的权重应该高�
 - [ ] 移动端 + 桌面端 + reduced-motion 三条路径都走查过
 - [ ] Lighthouse：performance / accessibility / SEO 都跑一遍
 - [ ] 照片已压缩，officer 照片已获授权
+- [ ] **Gallery 的 9 张图换成原图** ⚠️ 现在 `public/gallery/*.webp` 是 2026-09-14 为 board meeting 演示从 Instagram 截图裁出来的（画质有限、日期按发帖时间估的）。换成原图，并核对每张的活动名和年月（`components/Gallery.tsx` 顶部的 `archive` 数组）
 - [ ] OG 图存在（用 Instagram DM 给自己发一次链接，看预览卡片）
 - [ ] `npm run build` 通过
 - [ ] 域名 DNS 生效、HTTPS 正常
