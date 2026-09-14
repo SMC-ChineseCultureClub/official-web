@@ -8,6 +8,7 @@ export default function Epigraph() {
       aria-label="Closing verse"
     >
       <div className="chapter-content epigraph__content">
+        <span className="epigraph__rule" aria-hidden="true"></span>
         <p className="epigraph__verse" aria-label="但愿人长久，千里共婵娟。">
           <span className="epigraph__couplet epigraph__couplet--left">
             <span className="epigraph__line">但 愿 人 长 久 ，</span>
@@ -17,6 +18,9 @@ export default function Epigraph() {
             <span className="epigraph__line">千 里 <span className="accent">共</span> 婵 娟 。</span>
             <span className="epigraph__trans">and share this moon a thousand miles apart.</span>
           </span>
+        </p>
+        <p className="epigraph__source">
+          — Su Shi, <cite>Prelude to Water Melody</cite>
         </p>
       </div>
     </aside>

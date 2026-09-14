@@ -131,8 +131,20 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
       if (!segments.length) return
 
       const viewportHeight = window.innerHeight
-      const focusY = window.scrollY + viewportHeight * 0.45
       const pageHeight = Math.max(document.documentElement.scrollHeight - viewportHeight, 1)
+      // Without transition spacers (no brush) the closing epigraph is short, and a
+      // fixed 45% focus line can bottom out above it, leaving Join's ink theme on.
+      // Over the last stretch of scroll, slide the focus line down to the viewport's
+      // bottom edge so the last chapter is always reached. The brush layout keeps the
+      // fixed line: its join→epigraph choreography is scrubbed against it.
+      const plainFlow = !segments.some((s) => s.kind === 'transition' && s.bottom > s.top)
+      let focusFrac = 0.45
+      if (plainFlow) {
+        const ramp = viewportHeight * (1 - focusFrac)
+        const t = Math.min(1, Math.max(0, 1 - (pageHeight - window.scrollY) / ramp))
+        focusFrac += (1 - focusFrac) * t
+      }
+      const focusY = window.scrollY + viewportHeight * focusFrac
       const narrative = Math.min(1, Math.max(0, window.scrollY / pageHeight))
 
       const current = findSegment(focusY)
