@@ -56,10 +56,10 @@ site:
   smc_clubs_url: "https://www.smc.edu/community/office-of-student-life/student-government/clubs/chinese-culture-club.php"         # SMC 官网社团页，填前请点开确认还有效
 
   # 网站域名（影响 SEO metadata 和 public/CNAME）
-  domain: TODO                # 例: ccc.peterguan.com
+  domain: TODO                # 正式域名待 board meeting 决定；定了改 lib/site.ts 的 SITE_URL
 
   # ⚠️ 现在全站被 robots noindex 屏蔽，不会被搜索引擎收录。
-  # 准备好上线了就改成 true
+  # 上线当天在 lib/site.ts 把 ALLOW_INDEXING 改成 true（同时控制 robots meta、robots.txt、sitemap）
   allow_search_indexing: false
 
 
@@ -73,9 +73,10 @@ hero:
   # 不再需要填写。
   lede: REMOVE
 
-  # 中文小字副标题，现在是「a quieter way of belonging.」
-  tagline_en: TODO
-  # 这里我也希望你可以给我一些建议。
+  # 「中国文化社」下方的英文小字副标题
+  tagline_en: "culture, shared among friends."
+  # 2026-09-14 定稿（原「a quieter way of belonging.」）。页面上前面带「— 」。
+  # 改了之后要重截分享预览图（app/opengraph-image.jpg）。
 
   # 首屏底部三格。最早的 240+ 会员 / 14 场活动 / II 年是编的，
   # 中间一版 10+ events a year / ALL backgrounds welcome 也已撤下。
@@ -133,11 +134,8 @@ about:
 #    - photo / href 是可选字段：有照片大卡片显示图，有链接条目可点击
 # ───────────────────────────────────────────────────────────────────────
 events: SEE lib/events.ts
-  # 待确认：
-  #   - 学期最后一次例会暂定 12/10（until）
-  #   - 11/26 感恩节已按不开处理（skip）
-  #   - 10/1 暂定无例会（未列入）
-  #   - Potluck 日期、时间待定
+  # 2026-09-14 确认完成：最后一次例会 12/10；10/29（Club Row）、11/26（感恩节）不开；
+  # 10/1 无例会；Potluck 日期未定，页面显示 TBA，定了之后在 lib/events.ts 填 date / time。
 
 
 # ───────────────────────────────────────────────────────────────────────
@@ -161,6 +159,7 @@ gallery: SEE components/Gallery.tsx
 #    - 上层：President、Vice President、ICC Delegate 三张大照片卡片
 #    - 其余 12 人：不分组的小头像墙
 #    - 联系方式：Board 最下方只放社团邮箱 site.email（已确认有效），不公开个人邮箱
+#    - 每人（含上层三位）点击跳到自己的 IG 介绍帖，数组里的 post 字段就是帖子 id
 #    ⚠️ 照片是从介绍帖裁的演示图，上线前换原图（见 launch-plan §9）
 # ───────────────────────────────────────────────────────────────────────
 officers: SEE components/Officers.tsx
@@ -170,43 +169,22 @@ officers: SEE components/Officers.tsx
 # 7. Join（加入我们）
 # ───────────────────────────────────────────────────────────────────────
 join:
-  heading: TODO               # 现在是「Sit down for a while.」，想留就照抄
-  heading_cn: TODO            # 现在是「我们在等你」
-  body: TODO
-
-  # 确认是否真的免会费——现在文案写了 no dues
-  no_dues: TODO               # true 或 false
-
-  # 主按钮指向哪里
-  cta_target: TODO            # email 或 instagram
-
-  # 指导老师
-  # ⚠️⚠️ 上线前必须替换 —— 这是目前唯一一处「明知是假、且决定暂时留着」的内容。
-  #
-  #   现状：2026-09-12 起 Join 精简为「标题 + 一行时间地点 + IG」，
-  #         指导老师【已不在页面上显示】，占位名 Li Lei & Han Meimei 随之移除。
-  #         若 SMC 要求公示，拿到真实信息后再决定放哪（例如 Footer）。
-  #   负责人：需要向社团 advisor 本人 / Office of Student Life 索取
-  #          真实姓名与所属院系。
-  #   时点：2026-09-12 确认信息暂时拿不到，上线前补。
-  #
-  #   ⛔ 在这两项填好之前，不要把 allow_search_indexing 改成 true。
-  advisor_name: TODO
-  advisor_department: TODO    # 例: Department of Modern Languages
+  # 2026-09-12 起精简为「标题 + 一行时间地点 + Instagram embed」，已写入 components/Join.tsx。
+  heading: "Sit down for a while."
+  heading_cn: 我们在等你
+  line: "Every other Thursday · 11:15 AM · HSS 252 — just walk in"
+  # 指导老师：2026-09-14 决定网站上不显示（Join 和 Footer 都不放）。
+  advisor: REMOVE
 
 
 # ───────────────────────────────────────────────────────────────────────
 # 8. SEO / 分享卡片
 # ───────────────────────────────────────────────────────────────────────
 seo:
-  # 搜索结果和分享链接时显示的描述
-  # 现在提到 tea ceremonies / calligraphy / Lunar New Year，
-  # 确认这些是否真的是社团在做的事
-  description: TODO
-
-  # 分享到微信/IG/Slack 时的预览图，1200×630，放 public/ 下
-  # 现在没有，链接分享出去是一片空白
-  og_image: TODO
+  # 2026-09-14 已写入 lib/site.ts（标题、搜索描述、分享描述）。原描述里的 tea ceremonies 是编的，已删。
+  description: DONE
+  # app/opengraph-image.jpg / app/twitter-image.jpg，1200×630，截自 Hero。Hero 改了要重截。
+  og_image: DONE
 
 
 # ───────────────────────────────────────────────────────────────────────
