@@ -301,14 +301,6 @@ a { color: inherit; }
     margin-left: auto;
   }
 
-  /* About: stack body text and scroll card vertically in the right-hand lane. */
-  [data-rest-side="left"] .about-grid {
-    grid-template-columns: 1fr;
-    gap: clamp(36px, 5vw, 64px);
-  }
-  /* The scroll card is decorative — let it sit at the top of the stack. */
-  [data-rest-side="left"] .about__scroll { order: -1; max-width: 520px; }
-
   /* Events featured: image atop body, with a wider aspect so the row is not
      too tall once it occupies a single column. */
   [data-rest-side="right"] .events-feature {
@@ -631,103 +623,46 @@ section {
 /* ───── ABOUT ───── */
 #about { padding-top: clamp(60px, 10vh, 120px); }
 
-.about-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: clamp(40px, 7vw, 120px); align-items: start;
-}
-
-@media (max-width: 880px) { .about-grid { grid-template-columns: 1fr; } }
+/* Pull the title in toward the eyebrow; the shared 200px column is kept so the
+   eyebrow wraps the same as in other sections. */
+#about .section-head { column-gap: clamp(16px, 1.6vw, 24px); }
 
 .about__lead {
   font-family: var(--serif-display); font-weight: 300;
   font-size: clamp(24px, 2.4vw, 36px);
   line-height: 1.3; color: var(--ink);
-  margin: 0 0 28px; text-wrap: balance;
+  margin: 0; max-width: 28ch; text-wrap: balance;
 }
 
 .about__lead em { font-style: italic; color: var(--ink-soft); }
 
-.about__lead .seal-mark {
-  display: inline-block; vertical-align: -0.05em;
-  width: 0.55em; height: 0.55em;
-  background: var(--seal); margin: 0 0.1em 0 0.05em;
-  transform: rotate(-3deg);
+/* What we do: a scannable 2×2 instead of a paragraph. */
+.about__do {
+  list-style: none; padding: 0;
+  margin: clamp(32px, 5vh, 48px) 0 0;
+  max-width: 620px; /* clear of .story-rail at the right edge */
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(24px, 3vw, 48px);
 }
 
-.about__body p {
-  font-size: 16px; color: var(--ink-soft);
-  margin: 0 0 18px; max-width: 56ch;
-}
+@media (max-width: 520px) { .about__do { grid-template-columns: 1fr; } }
 
-.about__body p + p { text-indent: 2em; }
-
-.about__pull {
+.about__do li {
   border-top: 1px solid var(--ink-faint);
-  margin-top: 36px; padding-top: 32px;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  padding: 16px 0 18px;
+  display: flex; flex-direction: column; gap: 4px;
 }
 
-.pull__cell {
-  font-family: var(--serif-body);
-  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--ink-mute);
-}
-
-.pull__cell .v {
-  display: block;
+.about__do-what {
   font-family: var(--serif-display); font-style: italic;
-  font-weight: 400; text-transform: none; letter-spacing: 0;
-  font-size: 30px; color: var(--ink); margin-bottom: 4px;
+  font-size: 24px; line-height: 1.2; color: var(--ink);
 }
 
-.about__scroll {
-  position: relative;
-  padding: clamp(20px, 3vw, 36px);
-  border: 1px solid var(--ink-faint);
-  background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0));
-}
+.about__do-note { font-size: 15px; color: var(--ink-soft); }
 
-.about__scroll::before {
-  content: ""; position: absolute; top: -1px; left: -1px;
-  width: 14px; height: 14px;
-  border-top: 1px solid var(--ink); border-left: 1px solid var(--ink);
-}
-
-.about__scroll::after {
-  content: ""; position: absolute; bottom: -1px; right: -1px;
-  width: 14px; height: 14px;
-  border-bottom: 1px solid var(--ink); border-right: 1px solid var(--ink);
-}
-
-.about__scroll .cn-vert {
-  font-family: var(--serif-cn);
-  writing-mode: vertical-rl;
-  font-size: clamp(20px, 2vw, 26px);
-  letter-spacing: 0.38em; color: var(--ink);
-  line-height: 1.8; margin: 0 auto; display: block;
-}
-
-.about__scroll .cn-vert .accent { color: var(--seal); }
-
-.about__scroll-row {
-  display: flex; justify-content: center; align-items: center;
-  min-height: 320px; gap: clamp(24px, 4vw, 56px);
-}
-
-.about__scroll-row .seal-lg {
-  width: 76px; height: 76px;
-  background: var(--seal); color: var(--paper);
-  display: grid; place-items: center;
-  font-family: var(--serif-cn); font-size: 44px; line-height: 1;
-  transform: rotate(-4deg);
-  box-shadow: 0 0 0 0.5px rgba(255,255,255,0.2) inset, 0 1px 0 rgba(0,0,0,0.2) inset, 0 8px 24px -10px rgba(123,33,33,0.4);
-  position: relative; align-self: flex-start; margin-top: 24px;
-}
-
-.about__scroll-row .seal-lg::after {
-  content: ""; position: absolute; inset: -1px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.91  0 0 0 0 0.83  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  mix-blend-mode: screen; opacity: 0.55; pointer-events: none;
+.about__closing {
+  font-size: 16px; color: var(--ink-soft);
+  margin: clamp(20px, 3vh, 32px) 0 0; max-width: 56ch;
 }
 
 /* ───── EVENTS ───── */

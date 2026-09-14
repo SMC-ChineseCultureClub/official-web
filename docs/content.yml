@@ -94,17 +94,33 @@ hero:
 # 3. About（关于我们）
 # ───────────────────────────────────────────────────────────────────────
 about:
-  # 开头那段大字
-  lead: TODO
+  # 2026-09-13 已写入 components/About.tsx。定位：第一印象是交朋友的 social club，
+  # 文化学习留给 meeting。创始人真名不出现；也不提校内其它华人学生组织。
+  # 访客不读大段文字 → 只保留：一句 lead + 四格活动 + 一句 closing。
+  # 已删：竖排诗卡片（一盏茶，一段话…）和「会」印章、底部三格（与 Hero 重复）、长段落。
+  heading: "Good company, and a little culture."   # 原「An unhurried home for heritage.」
 
-  # 第二段。现在写的「Founded by Songyi Yu in 2025」「借来的厨房办春节」
-  # 「中秋切八块月饼」全是编的。
-  # ⚠️ 如果要写创始人真名，必须本人同意——这会公开显示。
-  body: TODO
-  # 这段我们一会仔细聊一聊，你帮我一起编辑。同时创始人真名不要出现。
+  lead: "A place at SMC to make friends, with Chinese culture as the thread that ties it together."
 
-  # 第三段（现在是「No fluency, no prior knowledge, no Chinese surname required.」）
-  closing: TODO # 保持现有这段我觉得挺好的
+  activities:
+    - what: Calligraphy
+      note: 福 characters, spring couplets
+    - what: Crafts
+      note: Plaster figurines, cloisonné      # 掐丝珐琅，已确认
+    - what: Games
+      note: Trivia on festivals and traditions   # 原 Kahoot
+    - what: Potlucks
+      note: And holiday events with other clubs
+
+  closing: "No fluency, no prior knowledge, no Chinese surname required. Only curiosity, and a willingness to listen."
+
+  # 成立背景（真实信息，暂未上页面，留作以后「Our story」之类的位置备用）：
+  founding_story: >-
+    Three students started the club in 2025. SMC already had clubs celebrating Korean,
+    Japanese, Mexican, and Pacific Islander cultures, but nowhere to share Chinese culture —
+    so they built one, open to everyone. Most of our members grew up with it, in China,
+    Malaysia, Singapore, or Chinese American homes; the rest simply got curious, and after
+    a meeting or two nobody is keeping track.
 
 
 # ───────────────────────────────────────────────────────────────────────
