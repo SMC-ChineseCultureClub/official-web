@@ -28,12 +28,12 @@ const themeForChapter: Record<ChapterId, 'tea' | 'ink'> = {
   epigraph: 'tea',
 }
 
-const chapterMarks: Record<ChapterId, { glyph: string; phrase: string }> = {
+// Events and Board have no mark: the brush rests on the right there, so their
+// content starts at the left edge, right where the mark would sit on top of it.
+const chapterMarks: Partial<Record<ChapterId, { glyph: string; phrase: string }>> = {
   hero:     { glyph: '墨', phrase: '一笔起势' },
   about:    { glyph: '文', phrase: '文化有根' },
-  events:   { glyph: '礼', phrase: '相聚成礼' },
   gallery:  { glyph: '集', phrase: '记忆成卷' },
-  officers: { glyph: '会', phrase: '众手成局' },
   join:     { glyph: '来', phrase: '来者入席' },
   epigraph: { glyph: '诗', phrase: '落笔成章' },
 }
@@ -217,9 +217,19 @@ export default function StoryShell({ children }: { children: React.ReactNode }) 
     <div className="story-shell" data-active-chapter={activeChapter}>
       <InkScene stateRef={scrollStateRef} />
 
-      <div className="story-ideogram" aria-hidden="true">
-        <span className="story-ideogram__glyph">{chapterMarks[activeChapter].glyph}</span>
-        <span className="story-ideogram__phrase">{chapterMarks[activeChapter].phrase}</span>
+      {/* Every mark stays mounted so the outgoing one can fade out while the incoming
+          one (if the chapter has one) fades in. */}
+      <div className="story-ideograms" aria-hidden="true">
+        {CHAPTER_IDS.map((id) => {
+          const mark = chapterMarks[id]
+          if (!mark) return null
+          return (
+            <div className={`story-ideogram${activeChapter === id ? ' is-active' : ''}`} key={id}>
+              <span className="story-ideogram__glyph">{mark.glyph}</span>
+              <span className="story-ideogram__phrase">{mark.phrase}</span>
+            </div>
+          )
+        })}
       </div>
 
       <aside className="story-rail" aria-hidden="true">

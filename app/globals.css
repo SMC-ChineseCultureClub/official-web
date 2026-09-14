@@ -361,7 +361,12 @@ a { color: inherit; }
   display: flex; flex-direction: column; align-items: center; gap: 10px;
   transform: translateY(-50%);
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 420ms ease;
 }
+
+/* Marks cross-fade in place when the chapter changes. */
+.story-ideogram.is-active { opacity: 1; }
 
 .story-ideogram__glyph {
   font-family: var(--serif-cn);
