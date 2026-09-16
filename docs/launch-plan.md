@@ -51,13 +51,23 @@
 
 ## 2. 迁移 GitHub repo
 
-当前：`https://github.com/Yinghao-Guan/ccc.git`（个人账号）。
+当前：`https://github.com/SMC-ChineseCultureClub/official-web.git`（org，public）。**已完成。**
 
-- [ ] 用官方账号建 org（例如 `smc-ccc`），repo 迁到 org 下
-- [ ] 迁移方式：GitHub 的 Transfer ownership（保留 history），或新建 repo 后 push
-- [ ] 迁移后更新本地 remote：`git remote set-url origin <新地址>`
-- [ ] repo 设为 public（对社团项目更好，也方便未来招 dev）
+- [x] 用官方账号建 org（`SMC-ChineseCultureClub`），repo 迁到 org 下
+- [x] 迁移方式：GitHub 的 Transfer ownership（57 个 commit + 3 个分支 + PR 全部保留）
+- [x] 迁移后更新本地 remote
+- [x] repo 设为 public，默认分支 `main`
+- [x] 仓库改名 `offical-web` → `official-web`
+- [x] 清掉 repo Website 字段里的旧 Vercel 地址（上线后填正式域名）
+- [x] `Yinghao-Guan` 对该 repo 有 Admin 权限
+- [x] org 两名 owner：官方账号 + `Yinghao-Guan`
 - [ ] 保留个人 fork 作为备份
+
+暂缓（目前只有一名维护者，等有第二个人参与时再做）：
+
+- [ ] 建 `web` team，用 team 授权代替逐仓库授权
+- [ ] `main` 分支保护 ruleset（禁止直接 push，强制走 PR）
+- [ ] org Settings → Member privileges：Base permissions 保持 Read，限制建仓库权限
 
 ---
 
