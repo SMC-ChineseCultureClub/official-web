@@ -243,7 +243,7 @@
 ### 域名切换清单（拿到正式域名当天一起做）
 
 - [x] `lib/site.ts`：`SITE_URL` 改为 `https://smcccc.com`
-- [ ] `lib/site.ts`：`ALLOW_INDEXING` 改为 `true` ⚠️（这一个开关同时控制 robots meta、robots.txt、sitemap 引用）—— 等 §5.2 换完原图再翻
+- [x] `lib/site.ts`：`ALLOW_INDEXING` 改为 `true`（同时控制 robots meta、robots.txt、sitemap 引用）
 - [x] ~~删除 `public/CNAME`~~ ← **这条原先是错的**（按 Vercel 托管写的）。GitHub Pages 用自定义域名时该文件**必须保留**，内容已改为 `smcccc.com`
 - [ ] 撤下 `ccc.peterguan.com` 的 DNS 指向
 - [ ] GSC 验证 + 提交 sitemap

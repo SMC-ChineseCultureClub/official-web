@@ -4,8 +4,8 @@
 
 export const SITE_URL = 'https://smcccc.com'
 
-/** false until the demo photos in §5.2 are replaced: noindex + robots.txt disallow. */
-export const ALLOW_INDEXING = false
+/** Gates robots meta, robots.txt and the sitemap together. */
+export const ALLOW_INDEXING = true
 
 export const SITE_TITLE = 'Chinese Culture Club — Santa Monica College'
 
