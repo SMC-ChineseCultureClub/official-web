@@ -48,6 +48,7 @@ export const events: ClubEvent[] = [
     id: 'first-general-meeting',
     title: 'First General Meeting',
     em: 'First',
+    tag: 'Communicate · Connection · Chinese',
     date: '2026-09-17',
     time: MEETING_TIME,
     where: MEETING_ROOM,
