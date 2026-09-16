@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, Spectral } from 'next/font/google'
 import './globals.css'
 import { ALLOW_INDEXING, SHARE_DESCRIPTION, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '@/lib/site'
+import { BRUSH_MODEL_URL, ENVIRONMENT_URL, LOADER_SCRIPT, SCENE_SHOWN_MEDIA } from '@/lib/sceneLoading'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -55,6 +56,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${spectral.variable}`} suppressHydrationWarning>
       <head>
+        {/* Before first paint: decides whether the desktop loading cover shows. */}
+        <script dangerouslySetInnerHTML={{ __html: LOADER_SCRIPT }} />
+        {/* Start the brush downloads with the HTML instead of after three.js boots. */}
+        <link rel="preload" href={BRUSH_MODEL_URL} as="fetch" crossOrigin="anonymous" media={SCENE_SHOWN_MEDIA} />
+        <link rel="preload" href={ENVIRONMENT_URL} as="fetch" crossOrigin="anonymous" media={SCENE_SHOWN_MEDIA} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

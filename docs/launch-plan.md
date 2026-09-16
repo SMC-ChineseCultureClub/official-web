@@ -205,10 +205,11 @@
 - 笔模型 meshopt + WebP 压缩（5.7MB → 595KB）
 - 对比度 token `--ink-mute` 调深到 5.0:1
 - **手机不再下载 three.js**：`BrushScene` 先判断媒体查询，只在桌面动态 import `InkScene`。首页 First Load JS 396 kB → 116 kB；手机 FCP 7.4s → 2.4s，LCP 15.4s → 5.5s
+- **桌面加载页**（2026-09-16）：纸色遮罩（印章 + 一笔「一」+ 社团名）盖住页面，笔画出第一帧后淡出，最多等 5s；Hero 入场动画等遮罩揭开才开始。手机、reduced-motion、无 JS 不出现。本地生产包 + 真 GPU 约 1.2s 揭开，模拟 10 Mbps 首访约 4.3s
 
 本地测试用的 Python 服务器不压缩，Lighthouse 报的 ~1MB「text compression」在 Vercel / GitHub Pages 上不存在。剩下两项（2026-09-14 决定暂保持现状）：
 
-- [ ] **HDR 环境贴图**：drei 的 `Environment` preset 在运行时从 `raw.githubusercontent.com` 拉 1.6MB 的 `.hdr`（桌面）。改为自托管一张小尺寸的，或用 Lightformer 代替；需要对比笔的质感
+- [ ] **HDR 环境贴图**：~~drei 的 `Environment` preset 在运行时从 `raw.githack.com` 拉~~ 2026-09-16 已改为自托管同一张文件（`public/models/environment/`），并在 `<head>` 里预加载（仅桌面）。但仍是 1.6MB、几乎压不动，模拟 10 Mbps 首访时它是最后到的资源（约 4.1s），决定了桌面加载页要等多久。剩下的：换一张小尺寸的，或用 Lightformer 代替；需要对比笔的质感
 - [ ] **Noto Serif SC 字体 CSS 阻塞渲染**：Google Fonts 的样式表是同步加载的，手机 LCP 仍有 5.5s（LCP 元素是 Hero 背景的「国」字）。可改为非阻塞加载
 
 ---

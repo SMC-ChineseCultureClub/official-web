@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Environment, Sparkles, useGLTF } from '@react-three/drei'
-import { Suspense, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import * as THREE from 'three'
 import {
   ANCHORED_RESTS,
@@ -15,6 +15,7 @@ import {
   type TransitionId,
   SCENE_HIDDEN_QUERY,
 } from '@/lib/brushChoreography'
+import { BRUSH_MODEL_URL, BRUSH_READY_EVENT, ENVIRONMENT_URL } from '@/lib/sceneLoading'
 
 export type SegmentRef =
   | { kind: 'rest'; chapter: ChapterId }
@@ -49,7 +50,7 @@ function BrushModel({
   /** Receives the y of the model's bounding-box center, in model space at scale 1. */
   centerYRef: RefObject<number>
 }) {
-  const { scene } = useGLTF('/models/chinese-calligraphy-brush/source/Chinese Calligraphy Brush.glb')
+  const { scene } = useGLTF(BRUSH_MODEL_URL)
 
   const { model, centerY } = useMemo(() => {
     const clone = scene.clone(true)
@@ -97,6 +98,19 @@ function BrushModel({
   }, [model, handleMaterialsRef])
 
   return <primitive object={model} />
+}
+
+/** Calls onDrawn once the brush has been on screen for a frame. */
+function FirstFrame({ onDrawn }: { onDrawn: () => void }) {
+  const called = useRef(false)
+  useFrame(() => {
+    if (called.current) return
+    called.current = true
+    // useFrame runs just before the frame renders (and compiles the shaders);
+    // wait for the next one so the brush has actually been drawn.
+    requestAnimationFrame(onDrawn)
+  })
+  return null
 }
 
 // ── Ink-wash trail ──
@@ -223,7 +237,7 @@ function InkTrail({
   )
 }
 
-function SceneContents({ stateRef }: InkSceneProps) {
+function SceneContents({ stateRef, onDrawn }: InkSceneProps & { onDrawn: () => void }) {
   const { camera, viewport } = useThree()
   const brushRigRef = useRef<THREE.Group>(null)
   const rimLightRef = useRef<THREE.PointLight>(null)
@@ -412,13 +426,14 @@ function SceneContents({ stateRef }: InkSceneProps) {
       <group ref={brushRigRef}>
         <Suspense fallback={null}>
           <BrushModel handleMaterialsRef={handleMaterialsRef} centerYRef={brushCenterYRef} />
+          <FirstFrame onDrawn={onDrawn} />
         </Suspense>
       </group>
 
       <InkTrail marksRef={trailMarksRef} texture={inkTexture} />
 
       <Sparkles count={10} scale={[10, 7, 4]} size={1} speed={0.14} color="#f2d39f" opacity={0.16} />
-      <Environment preset="warehouse" />
+      <Environment files={ENVIRONMENT_URL} />
     </>
   )
 }
@@ -426,6 +441,13 @@ function SceneContents({ stateRef }: InkSceneProps) {
 export default function InkScene(props: InkSceneProps) {
   const [reducedMotion, setReducedMotion] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [drawn, setDrawn] = useState(false)
+
+  // Lifts the loading cover (lib/sceneLoading.ts) and fades the canvas in.
+  const onDrawn = useCallback(() => {
+    setDrawn(true)
+    window.dispatchEvent(new Event(BRUSH_READY_EVENT))
+  }, [])
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -449,13 +471,13 @@ export default function InkScene(props: InkSceneProps) {
   if (isMobile || reducedMotion) return null
 
   return (
-    <div className="scene-layer" aria-hidden="true">
+    <div className={`scene-layer${drawn ? ' is-drawn' : ''}`} aria-hidden="true">
       <Canvas
         camera={{ position: [0, 0, 8], fov: 46, near: 0.1, far: 60 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true }}
       >
-        <SceneContents {...props} />
+        <SceneContents {...props} onDrawn={onDrawn} />
       </Canvas>
     </div>
   )

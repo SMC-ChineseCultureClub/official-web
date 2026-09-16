@@ -1,4 +1,5 @@
 import Nav from '@/components/Nav'
+import PageLoader from '@/components/PageLoader'
 import Hero from '@/components/Hero'
 import About from '@/components/About'
 import Events from '@/components/Events'
@@ -14,6 +15,7 @@ import Transition from '@/components/Transition'
 export default function Page() {
   return (
     <>
+      <PageLoader />
       <Nav />
       <StoryShell>
         <Hero />
