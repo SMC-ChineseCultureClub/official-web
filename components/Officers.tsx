@@ -5,10 +5,10 @@ const CLUB_EMAIL = 'chineseculture.smc@gmail.com'
 // instagram.com/p/<id>/).
 const postUrl = (id: string) => `https://www.instagram.com/p/${id}/`
 
-// DEMO PHOTOS — cropped from the board introduction post on Instagram; replace
-// with originals before launch (docs/launch-plan.md). The contacts are shown
-// larger because they're who people reach out to; everyone shares the club
-// inbox rather than listing personal addresses.
+// Photos are originals except Elenor Joy, Francesca and Xinke Zong, which are
+// still crops of the Instagram introduction posts (docs/launch-plan.md). The
+// contacts are shown larger because they're who people reach out to; everyone
+// shares the club inbox rather than listing personal addresses.
 const contacts = [
   { name: 'Diana Tian', post: 'Dc_gnrTCf4T', role: 'President', photo: '/board/diana-tian.webp' },
   { name: 'Grace Tian', post: 'Dc_hHU6ilj2', role: 'Vice President', photo: '/board/grace-tian.webp' },
