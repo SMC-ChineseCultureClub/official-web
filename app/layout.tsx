@@ -62,7 +62,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        {/*
+          Cloudflare Web Analytics. Installed by hand because the DNS records
+          are DNS-only (grey cloud) so GitHub can answer Let's Encrypt's
+          HTTP-01 challenge — traffic never passes through Cloudflare's proxy,
+          so there is nothing to auto-inject the beacon. The token is public by
+          design; it ships in the page source.
+
+          Cookieless: it sets no cookies and stores nothing on the device, so
+          the site needs NO cookie consent banner. Don't add one for this.
+        */}
+        <script
+          type="module"
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "683d2fc56f474e17a122a4c28e8ec52d"}'
+        />
+      </body>
     </html>
   )
 }

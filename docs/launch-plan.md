@@ -127,7 +127,7 @@
 - [x] 自定义域名 `smcccc.com`，`public/CNAME` 随导出进入 `out/`，那一份才是真正生效的
 - [x] DNS（Cloudflare）：4 条 A + 4 条 AAAA 指向 GitHub Pages，`www` CNAME → `smc-chinesecultureclub.github.io`
 - [ ] 等 GitHub 签发证书后勾选 **Enforce HTTPS**
-- [ ] Analytics：Cloudflare Web Analytics（免费、不限量、cookieless，因此**不需要 cookie 同意横幅**），在 `app/layout.tsx` 加 script 标签
+- [x] Analytics：Cloudflare Web Analytics，beacon 在 `app/layout.tsx` 手动安装（灰云站点无法自动注入）。**cookieless，因此不需要 cookie 同意横幅** —— 不要为它加
 
 ⚠️ **Cloudflare 上所有这些记录必须是 DNS only（灰云）。** 开橙云会拦住 GitHub 的 HTTP-01 证书验证，导致 Enforce HTTPS 永远点不了。若将来要开代理，必须先等证书签出，且 SSL/TLS 模式设为 Full (strict) —— 设成 Flexible 会造成无限重定向。建议就保持灰云：GitHub Pages 自带 CDN，叠一层代理对本站量级无收益。
 
