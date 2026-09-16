@@ -151,10 +151,10 @@
 
 ### 5.2 上线前换原图 ⚠️
 
-两批照片都是 2026-09-14 为 board meeting 演示从 Instagram 截图裁出来的，分辨率有限。**同名替换即可**（WebP、长边 ≤1600px）。
+照片原本都是 2026-09-14 为 board meeting 演示从 Instagram 截图裁出来的，分辨率有限。**同名替换即可**（WebP、长边 ≤1600px）。
 
-- [ ] **Gallery 9 张** → `public/gallery/*.webp`；同时核对 `components/Gallery.tsx` 顶部 `archive` 里每张的活动名和年月（按 IG 发帖时间估的，Lantern Festival 最可疑）
-- [ ] **Board 15 张** → `public/board/*.webp`；上层三位（President / VP / ICC Delegate）最需要原图
+- [x] **Gallery 8/9 张已换原图**（2026-09-16）；年月改用原图 EXIF 拍摄时间，不再是按 IG 发帖时间估的。第 4 格 `Lacquer Fans`（Nov '25）仍是 IG 截图裁的 660×760，故意留着撑时间跨度（只有上学期的相册权限，更早的活动没有原图）；若之后拿到原图或 IG 原帖（IG 原图 1350px，比截图裁片好），同名替换即可。`enamel-lions` / `international-day` / `lacquer-fan-brush` / `mid-autumn` / `plaster-lions` 已无人引用，可删
+- [x] **Board 12/15 张已换原图**（2026-09-15，含上层三位）；仍缺 Elenor Joy、Francesca、Xinke Zong 的原图，这三张还是 IG 截图裁的，只在 120px 头像墙里出现，够用但不如其余清晰
 
 ### 5.3 已完成（记录）
 

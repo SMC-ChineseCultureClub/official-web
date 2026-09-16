@@ -140,14 +140,18 @@ events: SEE lib/events.ts
 
 # ───────────────────────────────────────────────────────────────────────
 # 5. Gallery（往期存档）
-#    2026-09-14：已换成 9 张真实活动图（components/Gallery.tsx 顶部 archive 数组），
-#    ⚠️ 但都是从 Instagram 截图裁的演示图，上线前要换原图（见 launch-plan §9）。
-#    年月是按 IG 发帖时间估的，需要核对：
-#      Lantern Festival — Apr '26（帖子 4/7 发的，活动本身可能更早）
-#      Club Row — May '26 · Calligraphy on Lacquer Fans / Lacquer Fans — Nov '25
-#      Plaster Lions — May '26 · Club Awareness — Mar '26 · Liuli Bracelets — May '26
-#      International Day — May '25 · Mid-Autumn Festival — Oct '25
-#    原图：长边 ≤1600px、WebP，放 public/gallery/，文件名沿用现在的即可直接替换。
+#    2026-09-16：9 张里 8 张已换成原图（components/Gallery.tsx 顶部 archive 数组）。
+#    年月来自原图 EXIF 拍摄时间，按活动日期分组：
+#      2026-04-02 Paper-Cutting / Lantern Festival（同一场）
+#      2026-04-28 Butterfly Hairpin / Inlaid Hairpins（同一场）
+#      2026-05-07 Club Row · 2026-05-14 Liuli Bracelets · 2026-05-29 Spring Potluck
+#      2026-03-26 Club Awareness
+#    ⚠️ Lacquer Fans（Nov '25）仍是 IG 截图裁的 660×760，留着是为了存档不只有
+#    2026 春季一个学期——手上只有上学期的相册权限，更早的活动拿不到原图。
+#    它只出现在第 4 格（桌面 244px 宽），这个尺寸下够清晰；换格子前先确认尺寸。
+#    换图：长边 ≤1600px、WebP，放 public/gallery/，文件名沿用 archive 里的即可。
+#    每格形状由位置决定（1 5:4 · 2 方 · 3 3:4 · 4 方 · 5 16:9 · 6 方 · 7-9 4:5），
+#    1/5/8 在窄屏变 3:2，换这三格时上下要留白。
 # ───────────────────────────────────────────────────────────────────────
 gallery: SEE components/Gallery.tsx
 
