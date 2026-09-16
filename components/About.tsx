@@ -37,6 +37,22 @@ export default function About() {
             No fluency, no prior knowledge, no Chinese surname required. Only curiosity, and a
             willingness to listen.
           </p>
+
+          <div className="ccc" role="img" aria-label="Chinese Culture Club — Communicate, Connection, Chinese">
+            {[
+              ['hinese', 'ommunicate'],
+              ['ulture', 'onnection'],
+              ['lub', 'hinese'],
+            ].map(([name, motto]) => (
+              <span className="ccc__unit" key={name}>
+                <span className="ccc__c">C</span>
+                <span className="ccc__pair">
+                  <span className="ccc__name">{name}</span>
+                  <span className="ccc__motto">{motto}</span>
+                </span>
+              </span>
+            ))}
+          </div>
         </div>
       </div>
       </div>
