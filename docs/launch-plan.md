@@ -73,6 +73,16 @@
 
 ## 3. 域名
 
+**已定：`smcccc.com`** —— 2026-09-15 在 Cloudflare Registrar 注册，**1 年期**（$10.46），WHOIS 隐私默认开启。
+
+- 注册商选 Cloudflare 的理由：成本价模式（无加价），续费价不会跳涨；Namecheap/Squarespace 的首年折扣在按年续费下反而更贵
+- 续费策略：**按年续，不预付多年** —— 学校账户每学期 $750，且社团存续年限不确定
+- ⚠️ 没有多年预付兜底，所以这两条是硬要求：**auto-renew 必须开**，且在社团官方 Google 日历上建**每年重复**的到期提醒（到期前 45 天 + 14 天）。官方账号跨届不变，提醒才跨届不丢
+- 付款建议由干事个人卡挂 auto-renew、事后走报销；不要用学年中途会过期的临时卡
+- 补救窗口：.com 过期后约 30 天宽限期内可原价续费；再往后进入 redemption，赎回费约 $80–100
+
+以下 3.1–3.3 为选型过程记录，留档。
+
 ### 3.1 已调研的候选（价格来自 Namecheap）
 
 | 域名 | 可注册 | 首年 | 续费 | 备注 |
@@ -99,8 +109,8 @@
 
 ### 3.4 域名定下后
 
-- [ ] 注册 + 开 WHOIS 隐私
-- [ ] DNS 指向 Vercel
+- [x] 注册 + 开 WHOIS 隐私
+- [x] DNS 指向 GitHub Pages（见 §4）
 - [ ] 开启自动续费，并在 club 日历上加到期提醒（届别交接的最大风险点）
 - [ ] 执行 §9 域名切换清单
 
@@ -108,18 +118,26 @@
 
 ## 4. 托管平台
 
-项目是 Next.js 15 App Router + `output: 'export'`（纯静态导出）。当前 `ccc.peterguan.com` 手动部署到 GitHub Pages。
+项目是 Next.js 15 App Router + `output: 'export'`（纯静态导出）。
 
-- [ ] 官方账号注册 Vercel，连接 org 下的 repo
-- [ ] 绑定自定义域名（Vercel 自动签 SSL）
-- [ ] 部署分支策略：`main` = production，`dev` = preview（每个分支/PR 自动出 preview URL）
-- [ ] Analytics：建议先只开 Vercel Web Analytics（无 cookie、无合规负担）
+**已定：GitHub Pages**（2026-09-15）。
 
-**Hobby 版条款：** 限个人非商业用途。社团站通常没问题；以后接赞助/卖票需重新评估（Pro $20/月，或转 Cloudflare Pages）。
+- [x] Pages source 设为 **GitHub Actions**（不是 deploy from a branch —— 要跑 Next.js 构建）
+- [x] 工作流 `.github/workflows/deploy.yml`：push 到 `main` 触发，`npm ci` → `npm run build` → 上传 `out/`
+- [x] 自定义域名 `smcccc.com`，`public/CNAME` 随导出进入 `out/`，那一份才是真正生效的
+- [x] DNS（Cloudflare）：4 条 A + 4 条 AAAA 指向 GitHub Pages，`www` CNAME → `smc-chinesecultureclub.github.io`
+- [ ] 等 GitHub 签发证书后勾选 **Enforce HTTPS**
+- [ ] Analytics：Cloudflare Web Analytics（免费、不限量、cookieless，因此**不需要 cookie 同意横幅**），在 `app/layout.tsx` 加 script 标签
 
-**`output: 'export'` 是否保留：** 第一版保留（风险最低）。迁 Vercel 稳定后可评估去掉，换来 `next/image` 自动优化；现在图片靠手动转 WebP + 限宽。
+⚠️ **Cloudflare 上所有这些记录必须是 DNS only（灰云）。** 开橙云会拦住 GitHub 的 HTTP-01 证书验证，导致 Enforce HTTPS 永远点不了。若将来要开代理，必须先等证书签出，且 SSL/TLS 模式设为 Full (strict) —— 设成 Flexible 会造成无限重定向。建议就保持灰云：GitHub Pages 自带 CDN，叠一层代理对本站量级无收益。
 
-**未来变动态的路线（备查）：** Route Handlers → Supabase 免费版（注意不活跃自动暂停）→ 重后端再考虑 Render。
+**为什么不是 Vercel：** 站点已是纯静态导出，Vercel 的 SSR / ISR / 图片优化一个都用不上。实测图片共 27 张 848 KB（已手工转 WebP、长边 ≤1600px），桌面端真正的大头是 three.js + 594 KB 的 GLB，`next/image` 对此无效；手机端按架构本就不加载 three.js。代价却是交接链上永久多一个账号。唯一真实损失是 PR 预览部署，对当前单人维护价值有限。
+
+**为什么不是 Cloudflare Pages：** 已进入维护模式，Cloudflare 官方推荐新项目用 **Workers static assets**。将来若需要 PR 预览，迁到 Workers 约半小时（`wrangler.jsonc` 指向 `out/`，静态资源请求免费且不限量），`out/` 产物完全不变。
+
+**`output: 'export'` 保留。** 去掉它会把静态站变成需要服务端运行时的应用，从此锁死在能跑 Node/edge 的托管商上，换来的只有 `next/image` 的响应式尺寸 —— 而那个用构建期 sharp 生成 `srcset` 就能免费拿到，且与托管商无关。
+
+**未来变动态的路线（备查）：** 需要服务端时再评估 Vercel / Workers；Route Handlers → Supabase 免费版（注意不活跃自动暂停）。
 
 ---
 
@@ -224,8 +242,9 @@
 
 ### 域名切换清单（拿到正式域名当天一起做）
 
-- [ ] `lib/site.ts`：`SITE_URL` 改为正式域名，`ALLOW_INDEXING` 改为 `true` ⚠️（这一个开关同时控制 robots meta、robots.txt、sitemap 引用）
-- [ ] 删除 `public/CNAME`
+- [x] `lib/site.ts`：`SITE_URL` 改为 `https://smcccc.com`
+- [ ] `lib/site.ts`：`ALLOW_INDEXING` 改为 `true` ⚠️（这一个开关同时控制 robots meta、robots.txt、sitemap 引用）—— 等 §5.2 换完原图再翻
+- [x] ~~删除 `public/CNAME`~~ ← **这条原先是错的**（按 Vercel 托管写的）。GitHub Pages 用自定义域名时该文件**必须保留**，内容已改为 `smcccc.com`
 - [ ] 撤下 `ccc.peterguan.com` 的 DNS 指向
 - [ ] GSC 验证 + 提交 sitemap
 

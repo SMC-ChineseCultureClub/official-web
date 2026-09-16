@@ -1,10 +1,10 @@
-// Site-wide settings that change together on launch day (docs/launch-plan.md,
-// "域名切换清单"): point SITE_URL at the real domain and flip ALLOW_INDEXING.
+// Site-wide settings (docs/launch-plan.md, "域名切换清单"). SITE_URL is already
+// the live domain; ALLOW_INDEXING is the one switch still waiting for launch day.
 // layout.tsx (robots meta), robots.ts and sitemap.ts all read from here.
 
-export const SITE_URL = 'https://ccc.peterguan.com'
+export const SITE_URL = 'https://smcccc.com'
 
-/** false while the site lives on the preview domain: noindex + robots.txt disallow. */
+/** false until the demo photos in §5.2 are replaced: noindex + robots.txt disallow. */
 export const ALLOW_INDEXING = false
 
 export const SITE_TITLE = 'Chinese Culture Club — Santa Monica College'
