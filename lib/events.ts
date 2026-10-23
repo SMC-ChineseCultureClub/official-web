@@ -87,13 +87,6 @@ export const events: ClubEvent[] = [
     description:
       'Clubs from across campus set up on the Quad. Find our table for mini games, snacks, and small prizes.',
   },
-  {
-    id: 'potluck-fall-2026',
-    title: 'Potluck',
-    em: 'Potluck',
-    date: null,
-    where: 'Clover Park',
-  },
 ]
 
 export const generalMeetings: Recurring = {
